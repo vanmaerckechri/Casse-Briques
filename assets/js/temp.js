@@ -26,6 +26,20 @@ var brickOffsetLeft = 23;
 var score = 0;
 var lives = 3;
 
+
+function changeBallAngle(angle)
+{
+	let distance = Math.sqrt(Math.pow(dx, 2)+Math.pow(dy, 2));
+	distance *= 5; //test vitesse *2
+	console.log('distance = '+distance);
+	dx = distance * Math.cos(angle * Math.PI / 180); //degré * (Math.PI / 180) => convertir degrés en gradiants.
+	dy = distance * Math.sin(angle * Math.PI / 180);
+	console.log('dx = '+dx);
+	console.log('dy = '+dy);
+	console.log(Math.cos(angle));
+}
+changeBallAngle(75);
+
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 document.addEventListener("mousemove", mouseMoveHandler, false);
