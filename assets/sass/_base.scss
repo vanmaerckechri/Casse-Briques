@@ -1,1 +1,11 @@
 @import "variables";
+html, body
+{
+	width: 100%;
+}
+canvas
+{
+	margin: 0 auto;
+	border: 1px solid black;
+	display: block;
+}

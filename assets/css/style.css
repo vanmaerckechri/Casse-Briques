@@ -8,4 +8,12 @@ html, body, header, nav, footer, section, div, span, h1, h2, h3, p, a, blockquot
   vertical-align: baseline;
   font-weight: normal; }
 
+html, body {
+  width: 100%; }
+
+canvas {
+  margin: 0 auto;
+  border: 1px solid black;
+  display: block; }
+
 /*# sourceMappingURL=style.css.map */
