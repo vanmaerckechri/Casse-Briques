@@ -41,7 +41,6 @@ var bricksGenLvl01 = [ // array 1 = briques bonus. array 2 = briques incassables
     2, 0, 2, 0, 2, 0, 2, 1, 2,
     0, 0, 0, 0, 1, 0, 0, 0, 0
     ];
-console.log(bricksGenLvl01[0]);
 
 function convertVisualArray()
 {
@@ -54,8 +53,6 @@ function convertVisualArray()
 		brickGenIndexCol++;
 		brickGenIndex = brickGenIndexCol
 	}
-	console.log(brickGenIndex);
-
 }
 
 function genMap()
@@ -160,8 +157,6 @@ function changeBallAngle()
     let distance = Math.sqrt(Math.pow(dx, 2)+Math.pow(dy, 2));
     let dxNegatif = dx < 0 ? -1 : 1;
     let dyNegatif = dy < 0 ? -1 : 1;
-    console.log('dx = '+dyNegatif);
-    console.log('distance = '+distance);
     dx = distance * Math.cos(angleDummyPaddle * Math.PI / 180); //degré * (Math.PI / 180) => convertir degrés en gradiants.
     dy = distance * Math.sin(angleDummyPaddle * Math.PI / 180);
     dx *= dxNegatif;
@@ -177,7 +172,7 @@ function drawDummyAngles()
     ctx.moveTo(paddleX + paddleWidth/2, paddleY);
     ctx.lineTo(paddleX + (paddleWidth/2) + ballCollisionDx, paddleY - ballCollisionDy);
     ctx.lineWidth = 2;
-    ctx.strokeStyle = "#0095DD";
+    ctx.strokeStyle = "rgba(225, 25, 25, .5)";
     ctx.stroke();
     ctx.closePath();
 
@@ -185,7 +180,7 @@ function drawDummyAngles()
     ctx.moveTo(paddleX + paddleWidth/2, paddleY);
     ctx.lineTo(paddleX + (paddleWidth/2) - ballCollisionDx, paddleY - ballCollisionDy);
     ctx.lineWidth = 2;
-    ctx.strokeStyle = "#0095DD";
+    ctx.strokeStyle = "rgba(225, 25, 25, .5)";
     ctx.stroke();
     ctx.closePath();   
 }
