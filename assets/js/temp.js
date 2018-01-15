@@ -99,6 +99,17 @@ function collisionDetection()
             var b = bricks[c][r];
             if(b.status == 1)
             {
+                if(x > b.x - 1 && x < b.x + 1  && y > b.y + 1 && y < b.y + brickHeight - 1 || x < b.x+brickWidth + 1 && x > b.x+brickWidth - 1 && y > b.y + 1 && y < b.y + brickHeight - 1)
+                {
+                    dx = -dx;
+                    b.status = 0;
+                    score++;
+                    if(score == brickRowCount*brickColumnCount)
+                    {
+                        alert("YOU WIN, CONGRATS!");
+                        document.location.reload();
+                    }
+                }
                 if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight)
                 {
                     dy = -dy;
