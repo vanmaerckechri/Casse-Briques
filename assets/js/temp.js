@@ -5,8 +5,8 @@ var ctx = canvas.getContext("2d");
 var ballRadius = 10;
 var x = canvas.width/2; //position au commencement de la partie
 var y = canvas.height-30;
-var dx = 2; // vitesse de deplacement
-var dy = -2;
+var dx = 6; // vitesse de deplacement
+var dy = -6;
 //joueur
 var paddleHeight = 10;
 var paddleWidth = 75;
@@ -31,19 +31,32 @@ var brickOffsetLeft = 23;
 var score = 0;
 var lives = 3;
 
-document.addEventListener("keydown", keyDownHandler, false);
-document.addEventListener("keyup", keyUpHandler, false);
-document.addEventListener("mousemove", mouseMoveHandler, false);
+var brickPlaceCol = 0;
+var brickPlaceRow = 0;
+var brickType = 0;
 
 var bricks = [];
-for(c=0; c<brickColumnCount; c++)
+var lvl01 = [[2, 8, 14, 20, 16], [4, 9, 18]]; // array 0 = briques incassables array 1 = briques bonus
+
+function createMap()
 {
-    bricks[c] = [];
-    for(r=0; r<brickRowCount; r++)
+    for(c=0; c<brickColumnCount; c++)
     {
-         bricks[c][r] = { x: 0, y: 0, status: 1 };
+        bricks[c] = [];
+        for(r=0; r<brickRowCount; r++)
+        {
+            if (brickPlaceRow == 2 && brickPlaceCol == 1)
+            {
+                brickType = 1;
+            }
+            bricks[c][r] = { x: 0, y: 0, status: 1, type: brickType };
+            brickType = 0;
+        }
     }
 }
+
+document.addEventListener("keydown", keyDownHandler, false);
+document.addEventListener("keyup", keyUpHandler, false);
 
 function keyDownHandler(e)
 {
@@ -83,13 +96,7 @@ function keyUpHandler(e)
         increaseAnglePressed = false;
     }
 }
-function mouseMoveHandler(e)
-{
-    var relativeX = e.clientX - canvas.offsetLeft;
-    if(relativeX > 0 && relativeX < canvas.width) {
-        paddleX = relativeX - paddleWidth/2;
-    }
-}
+
 function collisionDetection()
 {
     for(c=0; c<brickColumnCount; c++)
@@ -102,7 +109,7 @@ function collisionDetection()
                 if(x > b.x - 1 && x < b.x + 1  && y > b.y + 1 && y < b.y + brickHeight - 1 || x < b.x+brickWidth + 1 && x > b.x+brickWidth - 1 && y > b.y + 1 && y < b.y + brickHeight - 1)
                 {
                     dx = -dx;
-                    b.status = 0;
+                    b.status = b.type == 0 ? 0 : b.status;
                     score++;
                     if(score == brickRowCount*brickColumnCount)
                     {
@@ -113,7 +120,7 @@ function collisionDetection()
                 if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight)
                 {
                     dy = -dy;
-                    b.status = 0;
+                    b.status = b.type == 0 ? 0 : b.status;
                     score++;
                     if(score == brickRowCount*brickColumnCount)
                     {
@@ -191,7 +198,14 @@ function drawBricks()
                 bricks[c][r].y = brickY;
                 ctx.beginPath();
                 ctx.rect(brickX, brickY, brickWidth, brickHeight);
-                ctx.fillStyle = "#0095DD";
+                if (bricks[c][r].type == 0)
+                {
+                    ctx.fillStyle = "#0095DD";
+                }
+                else
+                {
+                    ctx.fillStyle = "orange";              
+                }
                 ctx.fill();
                 ctx.closePath();
             }
