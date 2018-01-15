@@ -5,8 +5,8 @@ var ctx = canvas.getContext("2d");
 var ballRadius = 10;
 var x = canvas.width/2; //position au commencement de la partie
 var y = canvas.height-30;
-var dx = 6; // vitesse de deplacement
-var dy = -6;
+var dx = 4; // vitesse de deplacement
+var dy = -4;
 //joueur
 var paddleHeight = 10;
 var paddleWidth = 75;
@@ -57,8 +57,6 @@ function convertVisualArray()
 
 function genMap()
 {
-
-
     for(c=0; c<brickColumnCount; c++)
     {
         bricks[c] = [];
@@ -301,11 +299,11 @@ function draw()
 
     if(decreaseAnglePressed == true && angleDummyPaddle > 20)
     {
-        angleDummyPaddle--;
+        angleDummyPaddle = angleDummyPaddle - 2;
     }
     else if (increaseAnglePressed == true && angleDummyPaddle < 60)
     {
-        angleDummyPaddle++;
+        angleDummyPaddle = angleDummyPaddle +2;
     }
 
     x += dx;
