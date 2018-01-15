@@ -15,6 +15,11 @@ var paddleY = canvas.height-paddleHeight
 var speedPlayer = 7;
 var rightPressed = false;
 var leftPressed = false;
+var anglePaddle = 45;
+var decreaseAnglePressed = false;
+var increaseAnglePressed = false;
+var ballCollisionDx = dx * 10;
+var ballCollisionDy = dy * 10;
 //briques
 var brickRowCount = 3;
 var brickColumnCount = 9;
@@ -25,20 +30,6 @@ var brickOffsetTop = 30;
 var brickOffsetLeft = 23;
 var score = 0;
 var lives = 3;
-
-
-function changeBallAngle(angle)
-{
-	let distance = Math.sqrt(Math.pow(dx, 2)+Math.pow(dy, 2));
-	distance *= 5; //test vitesse *2
-	console.log('distance = '+distance);
-	dx = distance * Math.cos(angle * Math.PI / 180); //degré * (Math.PI / 180) => convertir degrés en gradiants.
-	dy = distance * Math.sin(angle * Math.PI / 180);
-	console.log('dx = '+dx);
-	console.log('dy = '+dy);
-	console.log(Math.cos(angle));
-}
-changeBallAngle(75);
 
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
@@ -68,7 +59,7 @@ function keyDownHandler(e)
     {
         decreaseAnglePressed = true;
     }
-    else if(e.keyCode == 90) // a
+    else if(e.keyCode == 69) // e
     {
         increaseAnglePressed = true;
     }
@@ -87,7 +78,7 @@ function keyUpHandler(e)
     {
         decreaseAnglePressed = false;
     }
-    else if(e.keyCode == 90) // a
+    else if(e.keyCode == 69) // e
     {
         increaseAnglePressed = false;
     }
@@ -123,6 +114,46 @@ function collisionDetection()
         }
     }
 }
+
+function changeDummyAngle(angle)
+{
+    let distance = Math.sqrt(Math.pow(ballCollisionDx, 2)+Math.pow(ballCollisionDy, 2));
+    let dxNegatif = ballCollisionDx < 0 ? -1 : 1;
+    let dyNegatif = ballCollisionDy < 0 ? -1 : 1;
+    ballCollisionDx = distance * Math.cos(angle * Math.PI / 180); //degré * (Math.PI / 180) => convertir degrés en gradiants.
+    ballCollisionDy = distance * Math.sin(angle * Math.PI / 180);
+    ballCollisionDx *= dxNegatif;
+    ballCollisionDy *= dyNegatif;
+    drawDummyAngles();
+}
+
+function changeBallAngle(angle)
+{
+    let distance = Math.sqrt(Math.pow(dx, 2)+Math.pow(dy, 2));
+    let dxNegatif = dx < 0 ? -1 : 1;
+    let dyNegatif = dy < 0 ? -1 : 1;
+    console.log('dx = '+dyNegatif);
+    console.log('distance = '+distance);
+    dx = distance * Math.cos(angle * Math.PI / 180); //degré * (Math.PI / 180) => convertir degrés en gradiants.
+    dy = distance * Math.sin(angle * Math.PI / 180);
+    dx *= dxNegatif;
+    dy *= dyNegatif;
+}
+function drawDummyAngles()
+{
+
+    ballCollisionDx = ballCollisionDx < 0 ? (-1 * ballCollisionDx) : (1 * ballCollisionDx);
+    ballCollisionDy = ballCollisionDy < 0 ? (-1 * ballCollisionDy) : (1 * ballCollisionDy);
+
+    ctx.beginPath();
+    ctx.moveTo(paddleX + paddleWidth/2, paddleY);
+    ctx.lineTo(paddleX + (paddleWidth/2) + ballCollisionDx, paddleY - ballCollisionDy);
+    ctx.lineWidth=1;
+    ctx.strokeStyle = "#0095DD";
+    ctx.stroke();
+    ctx.closePath();    
+}
+
 function drawBall()
 {
     ctx.beginPath();
@@ -176,10 +207,11 @@ function draw()
     drawBricks();
     drawBall();
     drawPaddle();
+    drawDummyAngles();
     drawScore();
     drawLives();
     collisionDetection();
-    
+
     if(x + dx > canvas.width-ballRadius || x + dx < ballRadius)
     {
         dx = -dx;
@@ -205,8 +237,7 @@ function draw()
             {
                 x = canvas.width/2;
                 y = canvas.height-30;
-                dx = 3;
-                dy = -3;
+                changeBallAngle(anglePaddle);
                 paddleX = (canvas.width-paddleWidth)/2;
             }
         }
@@ -220,7 +251,18 @@ function draw()
     {
         paddleX -= 7;
     }
-    
+
+    if(decreaseAnglePressed == true && anglePaddle > 20)
+    {
+        anglePaddle--;
+        changeDummyAngle(anglePaddle);
+    }
+    else if (increaseAnglePressed == true && anglePaddle < 60)
+    {
+        anglePaddle++;
+        changeDummyAngle(anglePaddle);
+    }
+
     x += dx;
     y += dy;
     requestAnimationFrame(draw);
