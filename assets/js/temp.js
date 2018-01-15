@@ -115,15 +115,15 @@ function collisionDetection()
     }
 }
 
-function changeBallAngle(angle)
+function changeBallAngle()
 {
     let distance = Math.sqrt(Math.pow(dx, 2)+Math.pow(dy, 2));
     let dxNegatif = dx < 0 ? -1 : 1;
     let dyNegatif = dy < 0 ? -1 : 1;
     console.log('dx = '+dyNegatif);
     console.log('distance = '+distance);
-    dx = distance * Math.cos(angle * Math.PI / 180); //degré * (Math.PI / 180) => convertir degrés en gradiants.
-    dy = distance * Math.sin(angle * Math.PI / 180);
+    dx = distance * Math.cos(anglePaddle * Math.PI / 180); //degré * (Math.PI / 180) => convertir degrés en gradiants.
+    dy = distance * Math.sin(anglePaddle * Math.PI / 180);
     dx *= dxNegatif;
     dy *= dyNegatif;
 }
@@ -220,7 +220,9 @@ function draw()
     {
         if(x > paddleX && x < paddleX + paddleWidth)
         {
+            changeBallAngle();
             dy = -dy;
+            dx = dx;
         }
         else {
             lives--;
@@ -233,7 +235,6 @@ function draw()
             {
                 x = canvas.width/2;
                 y = canvas.height-30;
-                changeBallAngle(anglePaddle);
                 paddleX = (canvas.width-paddleWidth)/2;
             }
         }
