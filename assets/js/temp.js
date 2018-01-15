@@ -128,8 +128,11 @@ function collisionDetection()
                 if(x > b.x - 1 && x < b.x + 1  && y > b.y + 1 && y < b.y + brickHeight - 1 || x < b.x+brickWidth + 1 && x > b.x+brickWidth - 1 && y > b.y + 1 && y < b.y + brickHeight - 1)
                 {
                     dx = -dx;
-                    b.status = b.type == 0 ? 0 : b.status;
-                    score++;
+                    if (b.type <= 1)
+                    {
+                    	b.status = 0;
+                    	score++;
+                    }
                     if(score == brickRowCount*brickColumnCount)
                     {
                         alert("YOU WIN, CONGRATS!");
@@ -139,8 +142,11 @@ function collisionDetection()
                 if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight)
                 {
                     dy = -dy;
-                    b.status = b.type == 0 ? 0 : b.status;
-                    score++;
+                    if (b.type <= 1)
+                    {
+                    	b.status = 0;
+                    	score++;
+                    }
                     if(score == brickRowCount*brickColumnCount)
                     {
                         alert("YOU WIN, CONGRATS!");
