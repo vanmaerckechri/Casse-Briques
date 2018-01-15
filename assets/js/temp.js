@@ -155,7 +155,7 @@ function collisionDetection()
             var b = bricks[c][r];
             if(b.status == 1)
             {
-                if(x > b.x - 1 && x < b.x + 1  && y > b.y + 1 && y < b.y + brickHeight - 1 || x < b.x+brickWidth + 1 && x > b.x+brickWidth - 1 && y > b.y + 1 && y < b.y + brickHeight - 1)
+            	if(x > b.x - 3 && x < b.x && y > b.y && y < b.y + brickHeight || x < b.x + brickWidth + 3 && x > b.x+brickWidth && y > b.y && y < b.y + brickHeight)
                 {
                     dx = -dx;
                     if (b.type <= 1)
@@ -346,6 +346,10 @@ function draw()
 }
 function reInit()
 {
+	rightPressed = false;
+	leftPressed = false;
+	increaseAnglePressed = false;
+	decreaseAnglePressed = false;
 	dx = 0; // vitesse de deplacement
 	dy = 0;
     x = canvas.width/2;
