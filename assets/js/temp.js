@@ -64,6 +64,14 @@ function keyDownHandler(e)
     {
         leftPressed = true;
     }
+    else if(e.keyCode == 65) // a
+    {
+        decreaseAnglePressed = true;
+    }
+    else if(e.keyCode == 90) // a
+    {
+        increaseAnglePressed = true;
+    }
 }
 function keyUpHandler(e)
 {
@@ -74,6 +82,14 @@ function keyUpHandler(e)
     else if(e.keyCode == 37)
     {
         leftPressed = false;
+    }
+    else if(e.keyCode == 65) // a
+    {
+        decreaseAnglePressed = false;
+    }
+    else if(e.keyCode == 90) // a
+    {
+        increaseAnglePressed = false;
     }
 }
 function mouseMoveHandler(e)
