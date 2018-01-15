@@ -35,6 +35,7 @@ var lives = 3;
 var brickGenIndex = 0;
 var brickGenIndexCol = 0;
 var brickType = 0;
+var briquesNbrPourVictoire = 0;
 
 var bricks = [];
 var bricksGenLvl01 = [ // array 1 = briques bonus. array 2 = briques incassables.
@@ -42,6 +43,15 @@ var bricksGenLvl01 = [ // array 1 = briques bonus. array 2 = briques incassables
     2, 0, 2, 0, 0, 2, 0, 2,
     0, 0, 0, 0, 1, 0, 0, 0
     ];
+
+class Particules
+{
+    constructor()
+    {
+        this.posOriginX;
+        this.posOriginY;
+    }
+}
 
 function launchCountdown()
 {
@@ -90,9 +100,14 @@ function genMap()
         {
 
         	brickType = bricksGenLvl01[brickGenIndex];
+        	if (brickType <= 1)
+        	{
+        		briquesNbrPourVictoire++
+        	}
 			convertVisualArray();
             bricks[c][r] = { x: 0, y: 0, status: 1, type: brickType };
             brickType = 0;
+            console.log(briquesNbrPourVictoire);
         }
     }
 }
@@ -163,7 +178,7 @@ function collisionDetection()
                     	b.status = 0;
                     	score++;
                     }
-                    if(score == brickRowCount*brickColumnCount)
+                    if(score == briquesNbrPourVictoire)
                     {
                         alert("YOU WIN, CONGRATS!");
                         document.location.reload();
@@ -177,7 +192,7 @@ function collisionDetection()
                     	b.status = 0;
                     	score++;
                     }
-                    if(score == brickRowCount*brickColumnCount)
+                    if(score == briquesNbrPourVictoire)
                     {
                         alert("YOU WIN, CONGRATS!");
                         document.location.reload();
