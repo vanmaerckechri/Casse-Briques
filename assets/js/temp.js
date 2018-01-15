@@ -18,8 +18,8 @@ var leftPressed = false;
 var angleDummyPaddle = 45;
 var decreaseAnglePressed = false;
 var increaseAnglePressed = false;
-var ballCollisionDx = dx * 10;
-var ballCollisionDy = dy * 10;
+var ballCollisionDx = 30;
+var ballCollisionDy = 30;
 //briques
 var brickRowCount = 3;
 var brickColumnCount = 9;
@@ -208,11 +208,11 @@ function drawBricks()
                 {
                     ctx.fillStyle = "#0095DD";
                 }
-                else if
+                else if (bricks[c][r].type == 1)
                 {
                     ctx.fillStyle = "orange";              
                 }
-                else if (bricks[c][r].type == 0)
+                else if (bricks[c][r].type == 2)
                 {
                     ctx.fillStyle = "green";
                 }
