@@ -2,14 +2,14 @@ var canvas = document.getElementById("scene");
 var ctx = canvas.getContext("2d");
 
 //balle
-var ballRadius = 10;
+var ballRadius = 8;
 var x = canvas.width/2; //position au commencement de la partie
 var y = canvas.height-30;
 var dx = 4; // vitesse de deplacement
 var dy = -4;
 //joueur
 var paddleHeight = 10;
-var paddleWidth = 75;
+var paddleWidth = 90;
 var paddleX = (canvas.width-paddleWidth)/2; //position au commencement de la partie
 var paddleY = canvas.height-paddleHeight
 var speedPlayer = 7;
@@ -193,7 +193,7 @@ function drawBall()
 {
     ctx.beginPath();
     ctx.arc(x, y, ballRadius, 0, Math.PI*2);
-    ctx.fillStyle = "#0095DD";
+    ctx.fillStyle = "#EE7600";
     ctx.fill();
     ctx.closePath();
 }
@@ -201,7 +201,7 @@ function drawPaddle()
 {
     ctx.beginPath();
     ctx.rect(paddleX, paddleY, paddleWidth, paddleHeight);
-    ctx.fillStyle = "#0095DD";
+    ctx.fillStyle = "#E75480";
     ctx.fill();
     ctx.closePath();
 }
@@ -225,7 +225,7 @@ function drawBricks()
                 }
                 else if (bricks[c][r].type == 1)
                 {
-                    ctx.fillStyle = "orange";              
+                    ctx.fillStyle = "#0095DD";              
                 }
                 else if (bricks[c][r].type == 2)
                 {
