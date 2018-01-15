@@ -33,27 +33,32 @@ var lives = 3;
 
 var brickPlaceCol = 0;
 var brickPlaceRow = 0;
-var brickType = 0;
 
 var bricks = [];
-var lvl01 = [[2, 8, 14, 20, 16], [4, 9, 18]]; // array 0 = briques incassables array 1 = briques bonus
+var bricksGenLvl01 = [ // array 1 = briques bonus. array 2 = briques incassables.
+    0, 0, 0, 1, 0, 0, 0, 0, 0,
+    2, 0, 2, 0, 2, 0, 2, 1, 2,
+    0, 0, 0, 0, 1, 0, 0, 0, 0
+    ];
+console.log(bricksGenLvl01[0]);
 
-function createMap()
+var bricksGenIndex = 0;
+
+function genMap()
 {
-    for(c=0; c<brickColumnCount; c++)
+    for(r=0; r<brickColumnCount; r++)
     {
-        bricks[c] = [];
-        for(r=0; r<brickRowCount; r++)
+        bricks[r] = [];
+        for(c=0; c<brickRowCount; c++)
         {
-            if (brickPlaceRow == 2 && brickPlaceCol == 1)
-            {
-                brickType = 1;
-            }
-            bricks[c][r] = { x: 0, y: 0, status: 1, type: brickType };
-            brickType = 0;
+            let brickType = bricksGenLvl01[bricksGenIndex];
+            bricks[r][c] = { x: 0, y: 0, status: 1, type: brickType };
+            bricksGenIndex++;
         }
     }
+    bricksGenIndex = 0;
 }
+genMap();
 
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
@@ -99,11 +104,11 @@ function keyUpHandler(e)
 
 function collisionDetection()
 {
-    for(c=0; c<brickColumnCount; c++)
+    for(r=0; r<brickColumnCount; r++)
     {
-        for(r=0; r<brickRowCount; r++)
+        for(c=0; c<brickRowCount; c++)
         {
-            var b = bricks[c][r];
+            var b = bricks[r][c];
             if(b.status == 1)
             {
                 if(x > b.x - 1 && x < b.x + 1  && y > b.y + 1 && y < b.y + brickHeight - 1 || x < b.x+brickWidth + 1 && x > b.x+brickWidth - 1 && y > b.y + 1 && y < b.y + brickHeight - 1)
@@ -186,25 +191,29 @@ function drawPaddle()
 }
 function drawBricks()
 {
-    for(c=0; c<brickColumnCount; c++)
+    for(r=0; r<brickColumnCount; r++)brickRowCount
     {
-        for(r=0; r<brickRowCount; r++)
+        for(c=0; c<brickRowCount; c++)
         {
-            if(bricks[c][r].status == 1)
+            if(bricks[r][c].status == 1)
             {
-                var brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft;
-                var brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
-                bricks[c][r].x = brickX;
-                bricks[c][r].y = brickY;
+                var brickX = (r*(brickWidth+brickPadding))+brickOffsetLeft;
+                var brickY = (c*(brickHeight+brickPadding))+brickOffsetTop;
+                bricks[r][c].x = brickX;
+                bricks[r][c].y = brickY;
                 ctx.beginPath();
                 ctx.rect(brickX, brickY, brickWidth, brickHeight);
-                if (bricks[c][r].type == 0)
+                if (bricks[r][c].type == 0)
                 {
                     ctx.fillStyle = "#0095DD";
                 }
-                else
+                else if(bricks[r][c].type == 1)
                 {
                     ctx.fillStyle = "orange";              
+                }
+                else if(bricks[r][c].type == 2)
+                {
+                    ctx.fillStyle = "green";              
                 }
                 ctx.fill();
                 ctx.closePath();
