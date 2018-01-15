@@ -115,18 +115,6 @@ function collisionDetection()
     }
 }
 
-function changeDummyAngle(angle)
-{
-    let distance = Math.sqrt(Math.pow(ballCollisionDx, 2)+Math.pow(ballCollisionDy, 2));
-    let dxNegatif = ballCollisionDx < 0 ? -1 : 1;
-    let dyNegatif = ballCollisionDy < 0 ? -1 : 1;
-    ballCollisionDx = distance * Math.cos(angle * Math.PI / 180); //degré * (Math.PI / 180) => convertir degrés en gradiants.
-    ballCollisionDy = distance * Math.sin(angle * Math.PI / 180);
-    ballCollisionDx *= dxNegatif;
-    ballCollisionDy *= dyNegatif;
-    drawDummyAngles();
-}
-
 function changeBallAngle(angle)
 {
     let distance = Math.sqrt(Math.pow(dx, 2)+Math.pow(dy, 2));
@@ -141,17 +129,25 @@ function changeBallAngle(angle)
 }
 function drawDummyAngles()
 {
-
-    ballCollisionDx = ballCollisionDx < 0 ? (-1 * ballCollisionDx) : (1 * ballCollisionDx);
-    ballCollisionDy = ballCollisionDy < 0 ? (-1 * ballCollisionDy) : (1 * ballCollisionDy);
+    let distance = Math.sqrt(Math.pow(ballCollisionDx, 2)+Math.pow(ballCollisionDy, 2));
+    ballCollisionDx = distance * Math.cos(anglePaddle * Math.PI / 180); //degré * (Math.PI / 180) => convertir degrés en gradiants.
+    ballCollisionDy = distance * Math.sin(anglePaddle * Math.PI / 180);
 
     ctx.beginPath();
     ctx.moveTo(paddleX + paddleWidth/2, paddleY);
     ctx.lineTo(paddleX + (paddleWidth/2) + ballCollisionDx, paddleY - ballCollisionDy);
-    ctx.lineWidth=1;
+    ctx.lineWidth = 2;
     ctx.strokeStyle = "#0095DD";
     ctx.stroke();
-    ctx.closePath();    
+    ctx.closePath();
+
+    ctx.beginPath();
+    ctx.moveTo(paddleX + paddleWidth/2, paddleY);
+    ctx.lineTo(paddleX + (paddleWidth/2) - ballCollisionDx, paddleY - ballCollisionDy);
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "#0095DD";
+    ctx.stroke();
+    ctx.closePath();   
 }
 
 function drawBall()
@@ -255,12 +251,10 @@ function draw()
     if(decreaseAnglePressed == true && anglePaddle > 20)
     {
         anglePaddle--;
-        changeDummyAngle(anglePaddle);
     }
     else if (increaseAnglePressed == true && anglePaddle < 60)
     {
         anglePaddle++;
-        changeDummyAngle(anglePaddle);
     }
 
     x += dx;
