@@ -15,7 +15,7 @@ var paddleY = canvas.height-paddleHeight
 var speedPlayer = 7;
 var rightPressed = false;
 var leftPressed = false;
-var anglePaddle = 45;
+var angleDummyPaddle = 45;
 var decreaseAnglePressed = false;
 var increaseAnglePressed = false;
 var ballCollisionDx = dx * 10;
@@ -122,16 +122,16 @@ function changeBallAngle()
     let dyNegatif = dy < 0 ? -1 : 1;
     console.log('dx = '+dyNegatif);
     console.log('distance = '+distance);
-    dx = distance * Math.cos(anglePaddle * Math.PI / 180); //degré * (Math.PI / 180) => convertir degrés en gradiants.
-    dy = distance * Math.sin(anglePaddle * Math.PI / 180);
+    dx = distance * Math.cos(angleDummyPaddle * Math.PI / 180); //degré * (Math.PI / 180) => convertir degrés en gradiants.
+    dy = distance * Math.sin(angleDummyPaddle * Math.PI / 180);
     dx *= dxNegatif;
     dy *= dyNegatif;
 }
 function drawDummyAngles()
 {
     let distance = Math.sqrt(Math.pow(ballCollisionDx, 2)+Math.pow(ballCollisionDy, 2));
-    ballCollisionDx = distance * Math.cos(anglePaddle * Math.PI / 180); //degré * (Math.PI / 180) => convertir degrés en gradiants.
-    ballCollisionDy = distance * Math.sin(anglePaddle * Math.PI / 180);
+    ballCollisionDx = distance * Math.cos(angleDummyPaddle * Math.PI / 180); //degré * (Math.PI / 180) => convertir degrés en gradiants.
+    ballCollisionDy = distance * Math.sin(angleDummyPaddle * Math.PI / 180);
 
     ctx.beginPath();
     ctx.moveTo(paddleX + paddleWidth/2, paddleY);
@@ -233,9 +233,7 @@ function draw()
             }
             else
             {
-                x = canvas.width/2;
-                y = canvas.height-30;
-                paddleX = (canvas.width-paddleWidth)/2;
+                reInit();
             }
         }
     }
@@ -249,18 +247,25 @@ function draw()
         paddleX -= 7;
     }
 
-    if(decreaseAnglePressed == true && anglePaddle > 20)
+    if(decreaseAnglePressed == true && angleDummyPaddle > 20)
     {
-        anglePaddle--;
+        angleDummyPaddle--;
     }
-    else if (increaseAnglePressed == true && anglePaddle < 60)
+    else if (increaseAnglePressed == true && angleDummyPaddle < 60)
     {
-        anglePaddle++;
+        angleDummyPaddle++;
     }
 
     x += dx;
     y += dy;
     requestAnimationFrame(draw);
+}
+function reInit()
+{
+    x = canvas.width/2;
+    y = canvas.height-30;
+    angleDummyPaddle = 45;
+    paddleX = (canvas.width-paddleWidth)/2;
 }
 
 draw();
