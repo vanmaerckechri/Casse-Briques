@@ -21,7 +21,8 @@ html, body {
 
 canvas {
   margin: 0 auto;
-  border: 1px solid black;
+  border: 3px solid black;
+  border-radius: 5px;
   display: block;
   background: url("../img/tuto.jpg"); }
 

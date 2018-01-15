@@ -26,9 +26,9 @@ var brickRowCount = 3;
 var brickColumnCount = 8;
 var brickWidth = 75;
 var brickHeight = 20;
-var brickPadding = 10;
+var brickPadding = 5;
 var brickOffsetTop = 65;
-var brickOffsetLeft = 65;
+var brickOffsetLeft = (canvas.width - ((brickWidth * brickColumnCount) + (brickPadding * brickColumnCount)))/2;
 var score = 0;
 var lives = 3;
 
@@ -113,11 +113,11 @@ function keyDownHandler(e)
 	    {
 	        leftPressed = true;
 	    }
-	    else if(e.keyCode == 65) // a
+	    else if(e.keyCode == 40) // a
 	    {
 	        decreaseAnglePressed = true;
 	    }
-	    else if(e.keyCode == 69) // e
+	    else if(e.keyCode == 38) // e
 	    {
 	        increaseAnglePressed = true;
 	    }
@@ -135,11 +135,11 @@ function keyUpHandler(e)
 	    {
 	        leftPressed = false;
 	    }
-	    else if(e.keyCode == 65) // a
+	    else if(e.keyCode == 40) // a
 	    {
 	        decreaseAnglePressed = false;
 	    }
-	    else if(e.keyCode == 69) // e
+	    else if(e.keyCode == 38) // e
 	    {
 	        increaseAnglePressed = false;
 	    }
