@@ -31,8 +31,8 @@ var brickOffsetLeft = 23;
 var score = 0;
 var lives = 3;
 
-var brickPlaceCol = 0;
-var brickPlaceRow = 0;
+var brickGenIndex = 0;
+var brickGenIndexCol = 0;
 var brickType = 0;
 
 var bricks = [];
@@ -43,17 +43,33 @@ var bricksGenLvl01 = [ // array 1 = briques bonus. array 2 = briques incassables
     ];
 console.log(bricksGenLvl01[0]);
 
+function convertVisualArray()
+{
+	let brickGenNextIndex = brickColumnCount;
+
+	brickGenIndex += brickColumnCount;
+
+	if (brickGenIndex > (brickColumnCount * (brickRowCount - 1))+brickGenIndexCol)
+	{
+		brickGenIndexCol++;
+		brickGenIndex = brickGenIndexCol
+	}
+	console.log(brickGenIndex);
+
+}
+
 function genMap()
 {
+
+
     for(c=0; c<brickColumnCount; c++)
     {
         bricks[c] = [];
         for(r=0; r<brickRowCount; r++)
         {
-            if (brickPlaceRow == 2 && brickPlaceCol == 1)
-            {
-                brickType = 1;
-            }
+
+        	brickType = bricksGenLvl01[brickGenIndex];
+			convertVisualArray();
             bricks[c][r] = { x: 0, y: 0, status: 1, type: brickType };
             brickType = 0;
         }
