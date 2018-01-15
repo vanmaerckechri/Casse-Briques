@@ -33,6 +33,7 @@ var lives = 3;
 
 var brickPlaceCol = 0;
 var brickPlaceRow = 0;
+var brickType = 0;
 
 var bricks = [];
 var bricksGenLvl01 = [ // array 1 = briques bonus. array 2 = briques incassables.
@@ -42,21 +43,21 @@ var bricksGenLvl01 = [ // array 1 = briques bonus. array 2 = briques incassables
     ];
 console.log(bricksGenLvl01[0]);
 
-var bricksGenIndex = 0;
-
 function genMap()
 {
-    for(r=0; r<brickColumnCount; r++)
+    for(c=0; c<brickColumnCount; c++)
     {
-        bricks[r] = [];
-        for(c=0; c<brickRowCount; c++)
+        bricks[c] = [];
+        for(r=0; r<brickRowCount; r++)
         {
-            let brickType = bricksGenLvl01[bricksGenIndex];
-            bricks[r][c] = { x: 0, y: 0, status: 1, type: brickType };
-            bricksGenIndex++;
+            if (brickPlaceRow == 2 && brickPlaceCol == 1)
+            {
+                brickType = 1;
+            }
+            bricks[c][r] = { x: 0, y: 0, status: 1, type: brickType };
+            brickType = 0;
         }
     }
-    bricksGenIndex = 0;
 }
 genMap();
 
@@ -104,11 +105,11 @@ function keyUpHandler(e)
 
 function collisionDetection()
 {
-    for(r=0; r<brickColumnCount; r++)
+    for(c=0; c<brickColumnCount; c++)
     {
-        for(c=0; c<brickRowCount; c++)
+        for(r=0; r<brickRowCount; r++)
         {
-            var b = bricks[r][c];
+            var b = bricks[c][r];
             if(b.status == 1)
             {
                 if(x > b.x - 1 && x < b.x + 1  && y > b.y + 1 && y < b.y + brickHeight - 1 || x < b.x+brickWidth + 1 && x > b.x+brickWidth - 1 && y > b.y + 1 && y < b.y + brickHeight - 1)
@@ -191,29 +192,29 @@ function drawPaddle()
 }
 function drawBricks()
 {
-    for(r=0; r<brickColumnCount; r++)brickRowCount
+    for(c=0; c<brickColumnCount; c++)
     {
-        for(c=0; c<brickRowCount; c++)
+        for(r=0; r<brickRowCount; r++)
         {
-            if(bricks[r][c].status == 1)
+            if(bricks[c][r].status == 1)
             {
-                var brickX = (r*(brickWidth+brickPadding))+brickOffsetLeft;
-                var brickY = (c*(brickHeight+brickPadding))+brickOffsetTop;
-                bricks[r][c].x = brickX;
-                bricks[r][c].y = brickY;
+                var brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft;
+                var brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
+                bricks[c][r].x = brickX;
+                bricks[c][r].y = brickY;
                 ctx.beginPath();
                 ctx.rect(brickX, brickY, brickWidth, brickHeight);
-                if (bricks[r][c].type == 0)
+                if (bricks[c][r].type == 0)
                 {
                     ctx.fillStyle = "#0095DD";
                 }
-                else if(bricks[r][c].type == 1)
+                else if
                 {
                     ctx.fillStyle = "orange";              
                 }
-                else if(bricks[r][c].type == 2)
+                else if (bricks[c][r].type == 0)
                 {
-                    ctx.fillStyle = "green";              
+                    ctx.fillStyle = "green";
                 }
                 ctx.fill();
                 ctx.closePath();
