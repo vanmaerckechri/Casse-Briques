@@ -23,12 +23,12 @@ var ballCollisionDx = 30;
 var ballCollisionDy = 30;
 //briques
 var brickRowCount = 3;
-var brickColumnCount = 9;
+var brickColumnCount = 8;
 var brickWidth = 75;
 var brickHeight = 20;
 var brickPadding = 10;
-var brickOffsetTop = 30;
-var brickOffsetLeft = 23;
+var brickOffsetTop = 65;
+var brickOffsetLeft = 65;
 var score = 0;
 var lives = 3;
 
@@ -38,10 +38,15 @@ var brickType = 0;
 
 var bricks = [];
 var bricksGenLvl01 = [ // array 1 = briques bonus. array 2 = briques incassables.
-    0, 0, 0, 1, 0, 0, 0, 0, 0,
-    2, 0, 2, 0, 2, 0, 2, 1, 2,
-    0, 0, 0, 0, 1, 0, 0, 0, 0
+    0, 0, 0, 1, 0, 0, 0, 0,
+    2, 0, 2, 0, 0, 2, 0, 2,
+    0, 0, 0, 0, 1, 0, 0, 0
     ];
+
+function launchCountdown()
+{
+
+}
 
 function convertVisualArray()
 {
@@ -257,7 +262,7 @@ function draw()
     drawBricks();
     drawBall();
     drawPaddle();
-    if (toPlay == 1) {drawDummyAngles();}
+    drawDummyAngles();
     drawScore();
     drawLives();
     collisionDetection();
