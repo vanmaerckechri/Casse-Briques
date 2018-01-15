@@ -1,12 +1,13 @@
 var canvas = document.getElementById("scene");
 var ctx = canvas.getContext("2d");
 
+var toPlay = 0;
 //balle
 var ballRadius = 8;
 var x = canvas.width/2; //position au commencement de la partie
 var y = canvas.height-30;
-var dx = 4; // vitesse de deplacement
-var dy = -4;
+var dx = 0; // vitesse de deplacement
+var dy = 0;
 //joueur
 var paddleHeight = 10;
 var paddleWidth = 90;
@@ -72,8 +73,11 @@ function genMap()
 }
 genMap();
 
-document.addEventListener("keydown", keyDownHandler, false);
-document.addEventListener("keyup", keyUpHandler, false);
+if (toPlay == 1)
+{
+	document.addEventListener("keydown", keyDownHandler, false);
+	document.addEventListener("keyup", keyUpHandler, false);
+}
 
 function keyDownHandler(e)
 {
@@ -253,7 +257,7 @@ function draw()
     drawBricks();
     drawBall();
     drawPaddle();
-    drawDummyAngles();
+    if (toPlay == 1) {drawDummyAngles();}
     drawScore();
     drawLives();
     collisionDetection();
@@ -312,6 +316,10 @@ function draw()
 }
 function reInit()
 {
+	document.removeEventListener("keydown", keyDownHandler, false);
+	document.removeEventListener("keyup", keyUpHandler, false);
+	var dx = 0; // vitesse de deplacement
+	var dy = 0;
     x = canvas.width/2;
     y = canvas.height-30;
     angleDummyPaddle = 45;
