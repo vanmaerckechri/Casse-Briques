@@ -45,8 +45,28 @@ var bricksGenLvl01 = [ // array 1 = briques bonus. array 2 = briques incassables
 
 function launchCountdown()
 {
-
+	let number = 3;
+	let text = document.getElementById('countdown');
+	text.innerHTML = number;
+	text.style.display = 'block';
+	text.style.left = canvas.offsetLeft + canvas.width/2 - 33 + 'px' ;
+	text.style.top = canvas.offsetTop + canvas.height/2 + 'px';
+	countdownTempo = setInterval (function()
+		{
+			number--;
+			text.innerHTML = number;
+			if (number < 0)
+			{
+				clearInterval(countdownTempo);
+				text.style.display = 'none';
+				toPlay = 1;
+				dx = 4;
+				dy = -4;
+			}
+		}, 1000);
 }
+
+launchCountdown();
 
 function convertVisualArray()
 {
@@ -78,49 +98,52 @@ function genMap()
 }
 genMap();
 
-if (toPlay == 1)
-{
 	document.addEventListener("keydown", keyDownHandler, false);
 	document.addEventListener("keyup", keyUpHandler, false);
-}
 
 function keyDownHandler(e)
 {
-    if(e.keyCode == 39)
-    {
-        rightPressed = true;
-    }
-    else if(e.keyCode == 37)
-    {
-        leftPressed = true;
-    }
-    else if(e.keyCode == 65) // a
-    {
-        decreaseAnglePressed = true;
-    }
-    else if(e.keyCode == 69) // e
-    {
-        increaseAnglePressed = true;
-    }
+	if (toPlay == 1)
+	{
+	    if(e.keyCode == 39)
+	    {
+	        rightPressed = true;
+	    }
+	    else if(e.keyCode == 37)
+	    {
+	        leftPressed = true;
+	    }
+	    else if(e.keyCode == 65) // a
+	    {
+	        decreaseAnglePressed = true;
+	    }
+	    else if(e.keyCode == 69) // e
+	    {
+	        increaseAnglePressed = true;
+	    }
+	}
 }
 function keyUpHandler(e)
 {
-    if(e.keyCode == 39)
-    {
-        rightPressed = false;
-    }
-    else if(e.keyCode == 37)
-    {
-        leftPressed = false;
-    }
-    else if(e.keyCode == 65) // a
-    {
-        decreaseAnglePressed = false;
-    }
-    else if(e.keyCode == 69) // e
-    {
-        increaseAnglePressed = false;
-    }
+	if (toPlay == 1)
+	{
+	    if(e.keyCode == 39)
+	    {
+	        rightPressed = false;
+	    }
+	    else if(e.keyCode == 37)
+	    {
+	        leftPressed = false;
+	    }
+	    else if(e.keyCode == 65) // a
+	    {
+	        decreaseAnglePressed = false;
+	    }
+	    else if(e.keyCode == 69) // e
+	    {
+	        increaseAnglePressed = false;
+	    }
+	}
 }
 
 function collisionDetection()
@@ -292,7 +315,9 @@ function draw()
             }
             else
             {
+            	toPlay = 0;
                 reInit();
+                launchCountdown();
             }
         }
     }
@@ -321,10 +346,8 @@ function draw()
 }
 function reInit()
 {
-	document.removeEventListener("keydown", keyDownHandler, false);
-	document.removeEventListener("keyup", keyUpHandler, false);
-	var dx = 0; // vitesse de deplacement
-	var dy = 0;
+	dx = 0; // vitesse de deplacement
+	dy = 0;
     x = canvas.width/2;
     y = canvas.height-30;
     angleDummyPaddle = 45;
