@@ -29,6 +29,8 @@ var brickHeight = 20;
 var brickPadding = 5;
 var brickOffsetTop = 65;
 var brickOffsetLeft = (canvas.width - ((brickWidth * brickColumnCount) + (brickPadding * brickColumnCount)))/2;
+var particules = [];
+var particulesIndex = 0;
 var score = 0;
 var lives = 3;
 
@@ -46,10 +48,27 @@ var bricksGenLvl01 = [ // array 1 = briques bonus. array 2 = briques incassables
 
 class Particules
 {
-    constructor()
+    constructor(posX, posY, indexTab)
     {
-        this.posOriginX;
-        this.posOriginY;
+        this.posOriginX = posX;
+        this.posOriginY = posY;
+        this.index = indexTab;
+        this.tempo;
+    }
+    get drawParticules()
+    {
+        this.createParticule();
+    }
+    createParticule()
+    {
+    	this.randWidth = Math.floor(Math.random()*brickWidth);
+    	this.randHeight = Math.floor(Math.random()*brickHeight);
+	    ctx.beginPath();
+		ctx.rect(this.posOriginX + this.randWidth, this.posOriginY + this.randHeight, 5, 5);
+		ctx.fillStyle = 'white';
+		ctx.fill();
+		ctx.closePath();
+        this.posOriginY = this.posOriginY + 3;
     }
 }
 
@@ -107,7 +126,6 @@ function genMap()
 			convertVisualArray();
             bricks[c][r] = { x: 0, y: 0, status: 1, type: brickType };
             brickType = 0;
-            console.log(briquesNbrPourVictoire);
         }
     }
 }
@@ -177,6 +195,8 @@ function collisionDetection()
                     {
                     	b.status = 0;
                     	score++;
+                    	particules.push(new Particules(b.x, b.y, particulesIndex));
+                    	particulesIndex++;
                     }
                     if(score == briquesNbrPourVictoire)
                     {
@@ -191,6 +211,8 @@ function collisionDetection()
                     {
                     	b.status = 0;
                     	score++;
+                    	particules.push(new Particules(b.x, b.y, particulesIndex));
+                    	particulesIndex++;
                     }
                     if(score == briquesNbrPourVictoire)
                     {
@@ -304,7 +326,10 @@ function draw()
     drawScore();
     drawLives();
     collisionDetection();
-
+    for (i = 0, partLength = particules.length; i < partLength; i++)
+    {
+    	particules[i].drawParticules;
+    }
     if(x + dx > canvas.width-ballRadius || x + dx < ballRadius)
     {
         dx = -dx;
