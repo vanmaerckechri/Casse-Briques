@@ -304,32 +304,64 @@ function drawParticles()
     {
         for(r=0; r<brickRowCount; r++)
         {
-            if(bricks[c][r].cycleParticles == 1)
-            {
-                for(p=0; p<particlesMax; p++)
+            let brique = bricks[c][r];
+            if(brique.cycleParticles > 0)
+            {   
+                let particleX;
+                let particleY;
+                let opacity = brique.particuleOpacity;
+                if(brique.cycleParticles == 1)
                 {
-                    bricks[c][r].particlePosX[p] = bricks[c][r].x + brickWidth/2;
-                    bricks[c][r].particulePosY[p] = bricks[c][r].y + brickHeight/2;
-                    let particleX = bricks[c][r].particlePosX[p];
-                    let particleY = bricks[c][r].particulePosY[p];
-                    ctx.beginPath();
-                    ctx.rect(particleX, particleY, 3, 3);
-                    if (bricks[c][r].type == 0)
+                    for(p=0; p<particlesMax; p++) //explosion init
                     {
-                        ctx.fillStyle = "#0095DD";
+                        brique.particlePosX[p] = brique.x + Math.floor(Math.random()*brickWidth);
+                        brique.particulePosY[p] = brique.y + Math.floor(Math.random()*brickHeight);
+                        particleX = brique.particlePosX[p];
+                        particleY = brique.particulePosY[p];
                     }
-                    else if (bricks[c][r].type == 1)
-                    {
-                        ctx.fillStyle = "#0095DD";              
-                    }
-                    else if (bricks[c][r].type == 2)
-                    {
-                        ctx.fillStyle = "green";
-                    }
-                    ctx.fill();
-                    ctx.closePath();
                 }
-            }
+                // direction = de 6h à 9h
+                if(brique.cycleParticles > 1 && brique.cycleParticles < 60) //explosion premiere direction
+                {
+                    for(p=0; p<particlesMax; p++)
+                    {
+                        brique.particlePosX[p] = brique.particlePosX[p] - Math.floor(Math.random()*20);
+                        brique.particulePosY[p] = brique.particulePosY[p] + Math.floor(Math.random()*6);
+                        particleX = brique.particlePosX[p];
+                        particleY = brique.particulePosY[p];
+                    }
+                }
+                if(brique.cycleParticles >= 60 && brique.cycleParticles < 140) //explosion premiere direction
+                {
+                    for(p=0; p<particlesMax; p++)
+                    {
+                        brique.particlePosX[p] = brique.particlePosX[p] - Math.floor(Math.random()*7);
+                        brique.particulePosY[p] = brique.particulePosY[p] + Math.floor(Math.random()*20);
+                        particleX = brique.particlePosX[p];
+                        particleY = brique.particulePosY[p];
+                    }
+                }
+                if(brique.cycleParticles >= 140 && brique.cycleParticles < 240) //explosion gravité
+                {
+                    for(p=0; p<particlesMax; p++)
+                    {
+                        brique.particulePosY[p] = brique.particulePosY[p] + Math.floor(Math.random()*40);
+                        particleY = brique.particulePosY[p];
+                    }
+                }
+                if(brique.cycleParticles > 0 && brique.cycleParticles < 240)
+                {
+                    for(p=0; p<particlesMax; p++)
+                    {
+                        ctx.beginPath();
+                        ctx.rect(brique.particlePosX[p], brique.particulePosY[p], 3, 3);
+                        ctx.fillStyle = 'rgb(0, 150, 220)';
+                        ctx.fill();
+                        ctx.closePath(); 
+                        bricks[c][r].cycleParticles++;
+                    }
+                }
+            }    
         }
     }
 }
