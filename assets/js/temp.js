@@ -299,7 +299,7 @@ function drawBricks()
 }
 function drawParticles()
 {
-    let particlesMax = 10;
+    let particlesMax = 30;
     for(c=0; c<brickColumnCount; c++)
     {
         for(r=0; r<brickRowCount; r++)
@@ -328,6 +328,7 @@ function drawParticles()
                 else if (brique.particuleDirection == 4)
                 {
                     directionX = -1;
+                    directionY = -1;
                 }
                 if(brique.cycleParticles == 1)
                 {
@@ -343,35 +344,35 @@ function drawParticles()
                     }
                 }
                 // direction = de 6h à 9h
-                if(brique.cycleParticles > 1 && brique.cycleParticles < 60) //explosion: impulsion direction
+                if(brique.cycleParticles > 1 && brique.cycleParticles < (120 * (particlesMax / 10))) //explosion: impulsion direction
                 {
                     for(p=0; p<particlesMax; p++)
                     {
-                        brique.particlePosX[p] = directionX * brique.particlePosX[p] + Math.floor(Math.random()*20);
+                        brique.particlePosX[p] = directionX * brique.particlePosX[p] + Math.floor(Math.random()*10);
                         brique.particulePosY[p] = directionY * brique.particulePosY[p] + Math.floor(Math.random()*6);
                         particleX = brique.particlePosX[p];
                         particleY = brique.particulePosY[p];
                     }
                 }
-                if(brique.cycleParticles >= 60 && brique.cycleParticles < 140) //explosion: début gravité direction
+                if(brique.cycleParticles >= 120 && brique.cycleParticles < (200 * (particlesMax / 10))) //explosion: début gravité direction
                 {
                     for(p=0; p<particlesMax; p++)
                     {
                         brique.particlePosX[p] = directionX * brique.particlePosX[p] + Math.floor(Math.random()*7);
-                        brique.particulePosY[p] = brique.particulePosY[p] + Math.floor(Math.random()*20);
+                        brique.particulePosY[p] = brique.particulePosY[p] + Math.floor(Math.random()*10);
                         particleX = brique.particlePosX[p];
                         particleY = brique.particulePosY[p];
                     }
                 }
-                if(brique.cycleParticles >= 140 && brique.cycleParticles < 240) //explosion: gravité direction
+                if(brique.cycleParticles >= 200 && brique.cycleParticles < (300 * (particlesMax / 10))) //explosion: gravité direction
                 {
                     for(p=0; p<particlesMax; p++)
                     {
-                        brique.particulePosY[p] = brique.particulePosY[p] + Math.floor(Math.random()*40);
+                        brique.particulePosY[p] = brique.particulePosY[p] + Math.floor(Math.random()*20);
                         particleY = brique.particulePosY[p];
                     }
                 }
-                if(brique.cycleParticles > 0 && brique.cycleParticles < 240)
+                if(brique.cycleParticles > 0 && brique.cycleParticles < (300 * (particlesMax / 10)))
                 {
                     for(p=0; p<particlesMax; p++)
                     {
