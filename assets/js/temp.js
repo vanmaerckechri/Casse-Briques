@@ -93,14 +93,13 @@ function genMap()
         bricks[c] = [];
         for(r=0; r<brickRowCount; r++)
         {
-
         	brickType = bricksGenLvl01[brickGenIndex];
         	if (brickType <= 1)
         	{
         		briquesNbrPourVictoire++
         	}
 			convertVisualArray();
-            bricks[c][r] = { x: 0, y: 0, status: 1, type: brickType };
+            bricks[c][r] = { x: 0, y: 0, status: 1, type: brickType, cycleParticles: 0, particlePosX : [], particulePosY: []};
             brickType = 0;
         }
     }
@@ -166,6 +165,7 @@ function collisionDetection()
                     if (b.type <= 1)
                     {
                     	b.status = 0;
+                        b.cycleParticles = 1;
                     	score++;
                     }
                     if(score == briquesNbrPourVictoire)
@@ -180,6 +180,7 @@ function collisionDetection()
                     if (b.type <= 1)
                     {
                     	b.status = 0;
+                        b.cycleParticles = 1;
                     	score++;
                     }
                     if(score == briquesNbrPourVictoire)
@@ -274,6 +275,42 @@ function drawBricks()
         }
     }
 }
+function drawParticles()
+{
+    let particlesMax = 10;
+    for(c=0; c<brickColumnCount; c++)
+    {
+        for(r=0; r<brickRowCount; r++)
+        {
+            if(bricks[c][r].cycleParticles == 1)
+            {
+                for(p=0; p<particlesMax; p++)
+                {
+                    bricks[c][r].particlePosX[p] = bricks[c][r].x + brickWidth/2;
+                    bricks[c][r].particulePosY[p] = bricks[c][r].y + brickHeight/2;
+                    let particleX = bricks[c][r].particlePosX[p];
+                    let particleY = bricks[c][r].particulePosY[p];
+                    ctx.beginPath();
+                    ctx.rect(particleX, particleY, 3, 3);
+                    if (bricks[c][r].type == 0)
+                    {
+                        ctx.fillStyle = "#0095DD";
+                    }
+                    else if (bricks[c][r].type == 1)
+                    {
+                        ctx.fillStyle = "#0095DD";              
+                    }
+                    else if (bricks[c][r].type == 2)
+                    {
+                        ctx.fillStyle = "green";
+                    }
+                    ctx.fill();
+                    ctx.closePath();
+                }
+            }
+        }
+    }
+}
 function drawScore() {
     ctx.font = "16px Arial";
     ctx.fillStyle = "#0095DD";
@@ -288,6 +325,7 @@ function draw()
 {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBricks();
+    drawParticles();
     drawBall();
     drawPaddle();
     drawDummyAngles();
@@ -358,6 +396,9 @@ function reInit()
 	leftPressed = false;
 	increaseAnglePressed = false;
 	decreaseAnglePressed = false;
+    bricks.particlePosX = [];
+    bricks.particlePosY = [];
+    bricks.cycleParticles = 0;
 	dx = 0; // vitesse de deplacement
 	dy = 0;
     x = canvas.width/2;
