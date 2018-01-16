@@ -99,7 +99,7 @@ function genMap()
         		briquesNbrPourVictoire++
         	}
 			convertVisualArray();
-            bricks[c][r] = { x: 0, y: 0, status: 1, type: brickType, cycleParticles: 0, particlePosX : [], particulePosY: [], particuleDirection: 0};
+            bricks[c][r] = { x: 0, y: 0, status: 1, type: brickType, cycleParticles: 0, particlePosX : [], particulePosY: [], particuleDirection: 0, colorR: [], colorG: [], colorB: []};
             brickType = 0;
         }
     }
@@ -309,10 +309,13 @@ function drawParticles()
             {   
                 let particleX;
                 let particleY;
-                let directionX;
+                let directionX = 1;
+                let directionY = 1;
+
                 if (brique.particuleDirection == 1)
                 {
                     directionX = 1;
+                    directionY = -1;
                 }
                 else if (brique.particuleDirection == 2)
                 {
@@ -328,26 +331,29 @@ function drawParticles()
                 }
                 if(brique.cycleParticles == 1)
                 {
-                    for(p=0; p<particlesMax; p++) //explosion init
+                    for(p=0; p<particlesMax; p++) //explosion: init
                     {
+                        brique.colorR[p] = 20 + Math.floor(Math.random()*20);
+                        brique.colorG[p] = 100 + Math.floor(Math.random()*100);
+                        brique.colorB[p] = 155 + Math.floor(Math.random()*100);
                         brique.particlePosX[p] = directionX * brique.x + Math.floor(Math.random()*brickWidth);
-                        brique.particulePosY[p] = brique.y + Math.floor(Math.random()*brickHeight);
+                        brique.particulePosY[p] = directionY * brique.y + Math.floor(Math.random()*brickHeight);
                         particleX = brique.particlePosX[p];
                         particleY = brique.particulePosY[p];
                     }
                 }
                 // direction = de 6h à 9h
-                if(brique.cycleParticles > 1 && brique.cycleParticles < 60) //explosion premiere direction
+                if(brique.cycleParticles > 1 && brique.cycleParticles < 60) //explosion: impulsion direction
                 {
                     for(p=0; p<particlesMax; p++)
                     {
                         brique.particlePosX[p] = directionX * brique.particlePosX[p] + Math.floor(Math.random()*20);
-                        brique.particulePosY[p] = brique.particulePosY[p] + Math.floor(Math.random()*6);
+                        brique.particulePosY[p] = directionY * brique.particulePosY[p] + Math.floor(Math.random()*6);
                         particleX = brique.particlePosX[p];
                         particleY = brique.particulePosY[p];
                     }
                 }
-                if(brique.cycleParticles >= 60 && brique.cycleParticles < 140) //explosion premiere direction
+                if(brique.cycleParticles >= 60 && brique.cycleParticles < 140) //explosion: début gravité direction
                 {
                     for(p=0; p<particlesMax; p++)
                     {
@@ -357,7 +363,7 @@ function drawParticles()
                         particleY = brique.particulePosY[p];
                     }
                 }
-                if(brique.cycleParticles >= 140 && brique.cycleParticles < 240) //explosion gravité
+                if(brique.cycleParticles >= 140 && brique.cycleParticles < 240) //explosion: gravité direction
                 {
                     for(p=0; p<particlesMax; p++)
                     {
@@ -371,7 +377,7 @@ function drawParticles()
                     {
                         ctx.beginPath();
                         ctx.rect(brique.particlePosX[p], brique.particulePosY[p], 3, 3);
-                        ctx.fillStyle = 'rgb(0, 150, 220)';
+                        ctx.fillStyle = 'rgb('+brique.colorR[p]+', '+brique.colorG[p]+', '+brique.colorB[p]+')';
                         ctx.fill();
                         ctx.closePath(); 
                         bricks[c][r].cycleParticles++;
