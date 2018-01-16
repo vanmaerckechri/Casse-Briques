@@ -179,7 +179,7 @@ function collisionDetection()
             var b = bricks[c][r];
             if(b.status == 1)
             {
-            	if(x > b.x - 3 && x < b.x && y > b.y && y < b.y + brickHeight || x < b.x + brickWidth + 3 && x > b.x+brickWidth && y > b.y && y < b.y + brickHeight)
+            	if(x > b.x - ballRadius && x < b.x && y  > b.y -ballRadius && y < b.y + brickHeight +ballRadius || x < b.x + brickWidth + ballRadius && x > b.x+brickWidth && y  > b.y -ballRadius && y < b.y + brickHeight +ballRadius)
                 {
                     recordPaddleDirection(c, r);
                     dx = -dx;
