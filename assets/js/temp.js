@@ -195,7 +195,7 @@ function collisionDetection()
                         document.location.reload();
                     }
                 }
-                if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight)
+                if(x > b.x && x < b.x+brickWidth && y + ballRadius > b.y && y - ballRadius < b.y+brickHeight)
                 {
                     recordPaddleDirection(c, r);
                     dy = -dy;
