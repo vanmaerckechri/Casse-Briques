@@ -309,12 +309,28 @@ function drawParticles()
             {   
                 let particleX;
                 let particleY;
-                let opacity = brique.particuleOpacity;
+                let directionX;
+                if (brique.particuleDirection == 1)
+                {
+                    directionX = 1;
+                }
+                else if (brique.particuleDirection == 2)
+                {
+                    directionX = 1;
+                }
+                else if (brique.particuleDirection == 3)
+                {
+                    directionX = -1;
+                }
+                else if (brique.particuleDirection == 4)
+                {
+                    directionX = -1;
+                }
                 if(brique.cycleParticles == 1)
                 {
                     for(p=0; p<particlesMax; p++) //explosion init
                     {
-                        brique.particlePosX[p] = brique.x + Math.floor(Math.random()*brickWidth);
+                        brique.particlePosX[p] = directionX * brique.x + Math.floor(Math.random()*brickWidth);
                         brique.particulePosY[p] = brique.y + Math.floor(Math.random()*brickHeight);
                         particleX = brique.particlePosX[p];
                         particleY = brique.particulePosY[p];
@@ -325,7 +341,7 @@ function drawParticles()
                 {
                     for(p=0; p<particlesMax; p++)
                     {
-                        brique.particlePosX[p] = brique.particlePosX[p] - Math.floor(Math.random()*20);
+                        brique.particlePosX[p] = directionX * brique.particlePosX[p] + Math.floor(Math.random()*20);
                         brique.particulePosY[p] = brique.particulePosY[p] + Math.floor(Math.random()*6);
                         particleX = brique.particlePosX[p];
                         particleY = brique.particulePosY[p];
@@ -335,7 +351,7 @@ function drawParticles()
                 {
                     for(p=0; p<particlesMax; p++)
                     {
-                        brique.particlePosX[p] = brique.particlePosX[p] - Math.floor(Math.random()*7);
+                        brique.particlePosX[p] = directionX * brique.particlePosX[p] + Math.floor(Math.random()*7);
                         brique.particulePosY[p] = brique.particulePosY[p] + Math.floor(Math.random()*20);
                         particleX = brique.particlePosX[p];
                         particleY = brique.particulePosY[p];
