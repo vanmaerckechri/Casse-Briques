@@ -99,7 +99,7 @@ function genMap()
         		briquesNbrPourVictoire++
         	}
 			convertVisualArray();
-            bricks[c][r] = { x: 0, y: 0, status: 1, type: brickType, cycleParticles: 0, particlePosX : [], particulePosY: []};
+            bricks[c][r] = { x: 0, y: 0, status: 1, type: brickType, cycleParticles: 0, particlePosX : [], particulePosY: [], particuleDirection: 0};
             brickType = 0;
         }
     }
@@ -150,6 +150,26 @@ function keyUpHandler(e)
 	}
 }
 
+function recordPaddleDirection(c, r)
+{
+    if (dx > 0 && dy < 0)
+    {
+        bricks[c][r].particuleDirection = 1;
+    }
+    else if (dx > 0 && dy > 0)
+    {
+        bricks[c][r].particuleDirection = 2;
+    }
+    else if (dx < 0 && dy > 0)
+    {
+        bricks[c][r].particuleDirection = 3;
+    }
+    else
+    {
+        bricks[c][r].particuleDirection = 4;
+    }
+}
+
 function collisionDetection()
 {
     for(c=0; c<brickColumnCount; c++)
@@ -161,6 +181,7 @@ function collisionDetection()
             {
             	if(x > b.x - 3 && x < b.x && y > b.y && y < b.y + brickHeight || x < b.x + brickWidth + 3 && x > b.x+brickWidth && y > b.y && y < b.y + brickHeight)
                 {
+                    recordPaddleDirection(c, r);
                     dx = -dx;
                     if (b.type <= 1)
                     {
@@ -176,6 +197,7 @@ function collisionDetection()
                 }
                 if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight)
                 {
+                    recordPaddleDirection(c, r);
                     dy = -dy;
                     if (b.type <= 1)
                     {
