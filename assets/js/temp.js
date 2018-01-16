@@ -1,6 +1,7 @@
 var canvas = document.getElementById("scene");
 var ctx = canvas.getContext("2d");
 
+var text = document.getElementById('countdown');
 var toPlay = 0;
 //balle
 var ballRadius = 8;
@@ -29,8 +30,6 @@ var brickHeight = 20;
 var brickPadding = 5;
 var brickOffsetTop = 65;
 var brickOffsetLeft = (canvas.width - ((brickWidth * brickColumnCount) + (brickPadding * brickColumnCount)))/2;
-var particules = [];
-var particulesIndex = 0;
 var score = 0;
 var lives = 3;
 
@@ -45,57 +44,34 @@ var bricksGenLvl01 = [ // array 1 = briques bonus. array 2 = briques incassables
     2, 0, 2, 0, 0, 2, 0, 2,
     0, 0, 0, 0, 1, 0, 0, 0
     ];
+    
+document.addEventListener("keydown", keyDownHandler, false);
+document.addEventListener("keyup", keyUpHandler, false);
 
-class Particules
+function placeCoundown()
 {
-    constructor(posX, posY, indexTab)
-    {
-        this.posOriginX = posX;
-        this.posOriginY = posY;
-        this.index = indexTab;
-        this.tempo;
-    }
-    get drawParticules()
-    {
-        this.createParticule();
-    }
-    createParticule()
-    {
-    	this.randWidth = Math.floor(Math.random()*brickWidth);
-    	this.randHeight = Math.floor(Math.random()*brickHeight);
-	    ctx.beginPath();
-		ctx.rect(this.posOriginX + this.randWidth, this.posOriginY + this.randHeight, 5, 5);
-		ctx.fillStyle = 'white';
-		ctx.fill();
-		ctx.closePath();
-        this.posOriginY = this.posOriginY + 3;
-    }
+    text.style.left = canvas.offsetLeft + canvas.width/2 - 33 + 'px' ;
+    text.style.top = canvas.offsetTop + canvas.height/2 + 'px';
 }
-
 function launchCountdown()
 {
-	let number = 3;
-	let text = document.getElementById('countdown');
-	text.innerHTML = number;
-	text.style.display = 'block';
-	text.style.left = canvas.offsetLeft + canvas.width/2 - 33 + 'px' ;
-	text.style.top = canvas.offsetTop + canvas.height/2 + 'px';
-	countdownTempo = setInterval (function()
-		{
-			number--;
-			text.innerHTML = number;
-			if (number < 0)
-			{
-				clearInterval(countdownTempo);
-				text.style.display = 'none';
-				toPlay = 1;
-				dx = 4;
-				dy = -4;
-			}
-		}, 1000);
+    let number = 3;
+    text.innerHTML = number;
+    text.style.display = 'block';
+    countdownTempo = setInterval (function()
+        {
+            number--;
+            text.innerHTML = number;
+            if (number < 0)
+            {
+                clearInterval(countdownTempo);
+                text.style.display = 'none';
+                toPlay = 1;
+                dx = 4;
+                dy = -4;
+            }
+        }, 1000);
 }
-
-launchCountdown();
 
 function convertVisualArray()
 {
@@ -129,10 +105,6 @@ function genMap()
         }
     }
 }
-genMap();
-
-	document.addEventListener("keydown", keyDownHandler, false);
-	document.addEventListener("keyup", keyUpHandler, false);
 
 function keyDownHandler(e)
 {
@@ -195,8 +167,6 @@ function collisionDetection()
                     {
                     	b.status = 0;
                     	score++;
-                    	particules.push(new Particules(b.x, b.y, particulesIndex));
-                    	particulesIndex++;
                     }
                     if(score == briquesNbrPourVictoire)
                     {
@@ -211,8 +181,6 @@ function collisionDetection()
                     {
                     	b.status = 0;
                     	score++;
-                    	particules.push(new Particules(b.x, b.y, particulesIndex));
-                    	particulesIndex++;
                     }
                     if(score == briquesNbrPourVictoire)
                     {
@@ -326,10 +294,6 @@ function draw()
     drawScore();
     drawLives();
     collisionDetection();
-    for (i = 0, partLength = particules.length; i < partLength; i++)
-    {
-    	particules[i].drawParticules;
-    }
     if(x + dx > canvas.width-ballRadius || x + dx < ballRadius)
     {
         dx = -dx;
@@ -382,6 +346,10 @@ function draw()
 
     x += dx;
     y += dy;
+    if (toPlay == 0)
+    {
+        placeCoundown();
+    }
     requestAnimationFrame(draw);
 }
 function reInit()
@@ -397,5 +365,6 @@ function reInit()
     angleDummyPaddle = 45;
     paddleX = (canvas.width-paddleWidth)/2;
 }
-
+genMap();
 draw();
+launchCountdown();
