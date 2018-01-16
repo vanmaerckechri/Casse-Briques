@@ -396,9 +396,6 @@ function reInit()
 	leftPressed = false;
 	increaseAnglePressed = false;
 	decreaseAnglePressed = false;
-    bricks.particlePosX = [];
-    bricks.particlePosY = [];
-    bricks.cycleParticles = 0;
 	dx = 0; // vitesse de deplacement
 	dy = 0;
     x = canvas.width/2;
