@@ -22,6 +22,13 @@ var decreaseAnglePressed = false;
 var increaseAnglePressed = false;
 var ballCollisionDx = 30;
 var ballCollisionDy = 30;
+// bonus
+var bonusNbrDif = 4;
+var img00 = new Image(), img01 = new Image(), img02 = new Image(), img03 = new Image();
+img00.src = 'assets/img/bonus_increaseWidth.png';
+img01.src = 'assets/img/bonus_decreaseWidth.png';
+img02.src = 'assets/img/bonus_decreaseSpeedBall.png';
+img03.src = 'assets/img/bonus_increaseSpeedBall.png';
 //briques
 var brickRowCount = 3;
 var brickColumnCount = 8;
@@ -40,7 +47,7 @@ var briquesNbrPourVictoire = 0;
 
 var bricks = [];
 var bricksGenLvl01 = [ // array 1 = briques bonus. array 2 = briques incassables.
-    0, 0, 0, 1, 0, 0, 0, 0,
+    0, 0, 0, 1, 0, 0, 0, 1,
     2, 0, 2, 0, 0, 2, 0, 2,
     0, 0, 0, 0, 1, 0, 0, 0
     ];
@@ -99,7 +106,12 @@ function genMap()
         		briquesNbrPourVictoire++
         	}
 			convertVisualArray();
-            bricks[c][r] = { x: 0, y: 0, status: 1, type: brickType, cycleParticles: 0, particlePosX : [], particulePosY: [], particuleDirection: 0, colorR: [], colorG: [], colorB: []};
+            bricks[c][r] = { x: 0, y: 0, status: 1, type: brickType, bonus: -1, cycleParticles: 0, particlePosX : [], particulePosY: [], particuleDirection: 0, colorR: [], colorG: [], colorB: []};
+            let brique = bricks[c][r];
+            if (brickType == 1)
+            {
+                brique.bonus = Math.floor(Math.random()*bonusNbrDif);
+            }
             brickType = 0;
         }
     }
@@ -297,6 +309,22 @@ function drawBricks()
         }
     }
 }
+function drawBonus()
+{
+    let particlesMax = 30;
+    for(c=0; c<brickColumnCount; c++)
+    {
+        for(r=0; r<brickRowCount; r++)
+        {
+            let brique = bricks[c][r];
+            if(brique.status == 0 && brique.type == 1)
+            {
+                let nomVariableImg = 'img0'+brique.bonus;
+                ctx.drawImage(eval(nomVariableImg), brique.x+brickWidth/2-12.5, brique.y+brickHeight/2-12.5, 25, 25);
+            }
+        }
+    }
+}
 function drawParticles()
 {
     let particlesMax = 30;
@@ -402,6 +430,7 @@ function draw()
 {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBricks();
+    drawBonus();
     drawParticles();
     drawBall();
     drawPaddle();
