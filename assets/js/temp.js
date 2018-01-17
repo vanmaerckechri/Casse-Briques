@@ -106,7 +106,7 @@ function genMap()
         		briquesNbrPourVictoire++
         	}
 			convertVisualArray();
-            bricks[c][r] = { x: 0, y: 0, status: 1, type: brickType, bonus: -1, cycleParticles: 0, particlePosX : [], particulePosY: [], particuleDirection: 0, colorR: [], colorG: [], colorB: []};
+            bricks[c][r] = { x: 0, y: 0, status: 1, type: brickType, bonus: -1, bonusY: brickOffsetTop, cycleParticles: 0, particlePosX : [], particulePosY: [], particuleDirection: 0, colorR: [], colorG: [], colorB: []};
             let brique = bricks[c][r];
             if (brickType == 1)
             {
@@ -115,6 +115,11 @@ function genMap()
             brickType = 0;
         }
     }
+}
+
+function genBonus(nbr)
+{
+
 }
 
 function keyDownHandler(e)
@@ -320,7 +325,8 @@ function drawBonus()
             if(brique.status == 0 && brique.type == 1)
             {
                 let nomVariableImg = 'img0'+brique.bonus;
-                ctx.drawImage(eval(nomVariableImg), brique.x+brickWidth/2-12.5, brique.y+brickHeight/2-12.5, 25, 25);
+                ctx.drawImage(eval(nomVariableImg), brique.x+brickWidth/2-12.5, brique.bonusY+brickHeight/2-12.5, 25, 25);
+                brique.bonusY += 3;
             }
         }
     }
