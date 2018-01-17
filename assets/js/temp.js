@@ -10,8 +10,9 @@ var y = canvas.height-30;
 var dx = 0; // vitesse de deplacement
 var dy = 0;
 //joueur
-var paddleHeight = 10;
 var paddleWidth = 90;
+var paddleHeight = 10;
+var paddle = {width: paddleWidth, height: paddleHeight};
 var paddleX = (canvas.width-paddleWidth)/2; //position au commencement de la partie
 var paddleY = canvas.height-paddleHeight
 var speedPlayer = 7;
@@ -24,6 +25,7 @@ var ballCollisionDx = 30;
 var ballCollisionDy = 30;
 // bonus
 var bonusNbrDif = 4;
+var bonusNbrIngame = 3;
 var img00 = new Image(), img01 = new Image(), img02 = new Image(), img03 = new Image();
 img00.src = 'assets/img/bonus_increaseWidth.png';
 img01.src = 'assets/img/bonus_decreaseWidth.png';
@@ -231,8 +233,20 @@ function collisionDetection()
             }
         }
     }
-}
 
+}
+function collisionBonus(briqueX, briqueY, brique) // C EST DE LA MERDE !!!
+{
+    if (paddleX > briqueX && paddleX < briqueX + brickWidth && brique.bonusY > paddleY && brique.bonusY < paddleY + paddleHeight)
+    {
+        alert('ok');
+        if (brique.bonus == 0)
+        {
+            paddle.width = paddle.width + 20;
+        }
+        brique.type = 0;
+    }
+}
 function changeBallAngle()
 {
     let distance = Math.sqrt(Math.pow(dx, 2)+Math.pow(dy, 2));
@@ -277,7 +291,7 @@ function drawBall()
 function drawPaddle()
 {
     ctx.beginPath();
-    ctx.rect(paddleX, paddleY, paddleWidth, paddleHeight);
+    ctx.rect(paddleX, paddleY, paddle.width, paddleHeight);
     ctx.fillStyle = "#E75480";
     ctx.fill();
     ctx.closePath();
@@ -326,6 +340,7 @@ function drawBonus()
             {
                 let nomVariableImg = 'img0'+brique.bonus;
                 ctx.drawImage(eval(nomVariableImg), brique.x+brickWidth/2-12.5, brique.bonusY+brickHeight/2-12.5, 25, 25);
+                collisionBonus(brique.x, brique.bonusY, brique); // PROBLEME ATTRIBUTS !!!!!!!!!
                 brique.bonusY += 3;
             }
         }
