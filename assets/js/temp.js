@@ -124,7 +124,7 @@ function genMap()
         for(r=0; r<brickRowCount; r++)
         {
         	brickType = bricksGenLvl01[brickGenIndex];
-        	if (brickType <= 1)
+        	if (brickType <= 1) // type 0 = destructible, type 1 = destructible + bonus
         	{
         		briquesNbrPourVictoire++
         	}
@@ -444,15 +444,14 @@ function drawBricks()
         }
     }
 }
-function drawBonus()
+function drawBonus() //systeme brouillon, mettre les bonus aléatoirement dans un tableau => plus léger, plus clair, plus modulable. Brique bonus casse, on prend le bonus dans l'index actuel du tableau et on en change le status.
 {
-    let particlesMax = 30;
     for(c=0; c<brickColumnCount; c++)
     {
         for(r=0; r<brickRowCount; r++)
         {
             let brique = bricks[c][r];
-            if(brique.status == 0 && brique.type == 1)
+            if(brique.status == 0 && brique.type == 1 && brique.bonus >= 0)
             {
                 let nomVariableImg = 'img0'+brique.bonus;
                 ctx.drawImage(eval(nomVariableImg), brique.x+brickWidth/2-bonusImgWidth/2, brique.bonusY+brickHeight/2-bonusImgWidth/2, bonusImgWidth, bonusImgWidth);
@@ -575,7 +574,7 @@ function draw()
     drawScore();
     drawLives();
     collisionDetection();
-    if(x + dx > canvas.width-ballRadius || x + dx < ballRadius)
+    if(x + dx > canvas.width - ballRadius || x + dx < ballRadius) //  rebonds balle canvas
     {
         dx = -dx;
     }
@@ -583,9 +582,9 @@ function draw()
     {
         dy = -dy;
     }
-    else if(y + dy > canvas.height-ballRadius-paddleHeight)
+    else if(y + dy > canvas.height - ballRadius - paddleHeight) // sortie balle sol
     {
-        if(x > paddleX && x < paddleX + paddleWidth)
+        if(x - ballRadius > paddleX && x - ballRadius < paddleX + paddle.width) // sauf si rebonds balle joueur
         {
             changeBallAngle();
             dy = -dy;
@@ -644,6 +643,10 @@ function reInit()
     x = canvas.width/2;
     y = canvas.height-30;
     angleDummyPaddle = 45;
+    laserDxLeft = 30;
+    laserDyLeft = 30;
+    laserDxRight = 30;
+    laserDyRight = 30;
     paddleX = (canvas.width-paddleWidth)/2;
     paddle.width = paddleWidth;
     paddle.height = paddleHeight;
