@@ -237,13 +237,28 @@ function collisionDetection()
 }
 function collisionBonus(briqueX, briqueY, brique) // C EST DE LA MERDE !!!
 {
-    if (paddleX > briqueX && paddleX < briqueX + brickWidth && brique.bonusY > paddleY && brique.bonusY < paddleY + paddleHeight)
+    if (briqueX > paddleX && briqueX < paddleX + paddleWidth && brique.bonusY > paddleY && brique.bonusY < paddleY + paddleHeight)
     {
-        alert('ok');
-        if (brique.bonus == 0)
+        if (brique.bonus == 0 && paddle.width < 140)
         {
             paddle.width = paddle.width + 20;
         }
+        if (brique.bonus == 1 && paddle.width > 50)
+        {
+            paddle.width = paddle.width - 20;
+        }
+        if (brique.bonus == 1 && dx > 2)
+        {
+            dx--;
+        }
+        if (brique.bonus == 1 && dx < 2)
+        {
+            dx++;
+        }
+        briqueY = canvas.height + 50;
+    }
+    if (briqueY > canvas.height)
+    {
         brique.type = 0;
     }
 }
@@ -264,16 +279,16 @@ function drawDummyAngles()
     ballCollisionDy = distance * Math.sin(angleDummyPaddle * Math.PI / 180);
 
     ctx.beginPath();
-    ctx.moveTo(paddleX + paddleWidth/2, paddleY);
-    ctx.lineTo(paddleX + (paddleWidth/2) + ballCollisionDx, paddleY - ballCollisionDy);
+    ctx.moveTo(paddleX + paddle.width/2, paddleY);
+    ctx.lineTo(paddleX + (paddle.width/2) + ballCollisionDx, paddleY - ballCollisionDy);
     ctx.lineWidth = 2;
     ctx.strokeStyle = "rgba(225, 25, 25, .5)";
     ctx.stroke();
     ctx.closePath();
 
     ctx.beginPath();
-    ctx.moveTo(paddleX + paddleWidth/2, paddleY);
-    ctx.lineTo(paddleX + (paddleWidth/2) - ballCollisionDx, paddleY - ballCollisionDy);
+    ctx.moveTo(paddleX + paddle.width/2, paddleY);
+    ctx.lineTo(paddleX + (paddle.width/2) - ballCollisionDx, paddleY - ballCollisionDy);
     ctx.lineWidth = 2;
     ctx.strokeStyle = "rgba(225, 25, 25, .5)";
     ctx.stroke();
@@ -491,7 +506,7 @@ function draw()
         }
     }
     
-    if(rightPressed && paddleX < canvas.width-paddleWidth)
+    if(rightPressed && paddleX < canvas.width-paddle.width)
     {
         paddleX += 7;
     }
