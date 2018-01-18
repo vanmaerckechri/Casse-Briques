@@ -383,7 +383,7 @@ function drawDummyAngles()
     ctx.moveTo(paddleX + paddle.width/2, paddleY);
     ctx.lineTo(paddleX + (paddle.width/2) + laserDxRight, paddleY - laserDyRight);
     ctx.lineWidth = 2;
-    ctx.strokeStyle = "rgba(225, 25, 25, .5)";
+    ctx.strokeStyle = "rgba(225, 25, 25, .3)";
     ctx.stroke();
     ctx.closePath();
 
@@ -391,7 +391,7 @@ function drawDummyAngles()
     ctx.moveTo(paddleX + paddle.width/2, paddleY);
     ctx.lineTo(paddleX + (paddle.width/2) - laserDxLeft, paddleY - laserDyLeft);
     ctx.lineWidth = 2;
-    ctx.strokeStyle = "rgba(225, 25, 25, .5)";
+    ctx.strokeStyle = "rgba(225, 25, 25, .3)";
     ctx.stroke();
     ctx.closePath();  
 }
@@ -426,17 +426,13 @@ function drawBricks()
                 bricks[c][r].y = brickY;
                 ctx.beginPath();
                 ctx.rect(brickX, brickY, brickWidth, brickHeight);
-                if (bricks[c][r].type == 0)
+                if (bricks[c][r].type == 0 || bricks[c][r].type == 1)
                 {
-                    ctx.fillStyle = "#0095DD";
-                }
-                else if (bricks[c][r].type == 1)
-                {
-                    ctx.fillStyle = "#0095DD";              
+                    ctx.fillStyle = "rgba(40, 150, 175, .9)";
                 }
                 else if (bricks[c][r].type == 2)
                 {
-                    ctx.fillStyle = "green";
+                    ctx.fillStyle = "rgba(100, 90, 100, .9)";
                 }
                 ctx.fill();
                 ctx.closePath();
@@ -554,12 +550,12 @@ function drawParticles()
 }
 function drawScore() {
     ctx.font = "16px Arial";
-    ctx.fillStyle = "#0095DD";
+    ctx.fillStyle = "rgba(40, 150, 175, .9)";
     ctx.fillText("Score: "+score, 8, 20);
 }
 function drawLives() {
     ctx.font = "16px Arial";
-    ctx.fillStyle = "#0095DD";
+    ctx.fillStyle = "rgba(40, 150, 175, .9)";
     ctx.fillText("Lives: "+lives, canvas.width-65, 20);
 }
 function draw()
