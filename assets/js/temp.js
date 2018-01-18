@@ -24,10 +24,17 @@ var leftPressed = false;
 var angleDummyPaddle = 45; //vitesse
 var decreaseAnglePressed = false;
 var increaseAnglePressed = false;
-var ballCollisionDxLeft = 30;
-var ballCollisionDyLeft = 30;
-var ballCollisionDxRight = 30;
-var ballCollisionDyRight = 30;
+var laserDummyDxLeft = 30;
+var laserDummyDyLeft = 30;
+var laserDummyDxRight = 30;
+var laserDummyDyRight = 30;
+var laserDummyLengthRight;
+var laserDummyLengthLeft;
+var laserDxRight = laserDummyDxRight;
+var laserDyRight = laserDummyDyRight;
+var laserDxLeft = laserDummyDxLeft;
+var laserDyLeft = laserDummyDyLeft;
+var laserLengthAtBirth = 0;
 var dummyAngleRefresh = 0;
 // bonus
 var bonusNbrDif = 4;
@@ -52,6 +59,7 @@ var brickGenIndex = 0;
 var brickGenIndexCol = 0;
 var brickType = 0;
 var briquesNbrPourVictoire = 0;
+var brickBelowOthersFromTop = 0;
 
 var bricks = [];
 var bricksGenLvl01 = [ // array 1 = briques bonus. array 2 = briques incassables.
@@ -62,6 +70,12 @@ var bricksGenLvl01 = [ // array 1 = briques bonus. array 2 = briques incassables
     
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
+
+function calcLaserLengthAtBirth()
+{
+    brickBelowOthersFromTop = ((brickRowCount + 1) * brickHeight) + (brickRowCount * brickPadding) + brickOffsetTop;
+    laserLengthAtBirth = canvas.height - brickBelowOthersFromTop;
+}
 
 function placeCoundown()
 {
@@ -137,6 +151,7 @@ function keyDownHandler(e)
 	    if(e.keyCode == 39)
 	    {
 	        rightPressed = true;
+            console.log(laserDummyLengthRight);
 	    }
 	    else if(e.keyCode == 37)
 	    {
@@ -302,42 +317,37 @@ function changeBallAngle()
     dy *= dyNegatif;
 }
 
-
-var dummyAnglesDistanceRight;
-var dummyAnglesDistanceLeft;
-var laserDxRight = ballCollisionDxRight;
-var laserDyRight = ballCollisionDyRight;
-var laserDxLeft = ballCollisionDxLeft;
-var laserDyLeft = ballCollisionDyLeft;
-
 function drawDummyAngles()
 {  
-    if (dummyAngleRefresh >= 30 && toPlay == 1)
+    if (dummyAngleRefresh >= 6 && toPlay == 1)
     {
-        ballCollisionDxRight = 30;
-        ballCollisionDyRight = 30;
-        ballCollisionDxLeft = 30;
-        ballCollisionDyLeft = 30;
+        laserDummyDyLeft =  laserLengthAtBirth;
+        laserDummyLengthLeft = laserDummyDyLeft / Math.sin(angleDummyPaddle * Math.PI / 180);
+        laserDummyDxLeft = laserDummyLengthLeft * Math.cos(angleDummyPaddle * Math.PI / 180);
+
+        laserDummyDyRight = laserLengthAtBirth;
+        laserDummyLengthRight = laserDummyDyRight / Math.sin(angleDummyPaddle * Math.PI / 180);
+        laserDummyDxRight = laserDummyLengthRight * Math.cos(angleDummyPaddle * Math.PI / 180);
+
         dummyAngleRefresh = 0;
+        console.log(laserDummyDxLeft);
     }
-    dummyAnglesDistanceLeft = Math.sqrt(Math.pow(ballCollisionDxLeft, 2)+Math.pow(ballCollisionDyLeft, 2));
-    dummyAnglesDistanceRight = Math.sqrt(Math.pow(ballCollisionDxRight, 2)+Math.pow(ballCollisionDyRight, 2));
-    console.log(dummyAnglesDistanceLeft);
-    if (paddleX + (paddle.width/2) - ballCollisionDxLeft > 0)
+
+    if (paddleX + (paddle.width/2) - laserDummyDxLeft > 0)
     {
-        dummyAnglesDistanceLeft += brickHeight;
-    }
-    else
-    {
-        dummyAnglesDistanceLeft -= brickHeight;
-    }
-    if (paddleX + (paddle.width/2) + ballCollisionDxRight < canvas.width)
-    {
-        dummyAnglesDistanceRight += brickHeight;
+        laserDummyLengthLeft += brickHeight;
     }
     else
     {
-        dummyAnglesDistanceRight -= brickHeight;
+        laserDummyLengthLeft -= brickHeight;
+    }
+    if (paddleX + (paddle.width/2) + laserDummyDxRight < canvas.width)
+    {
+        laserDummyLengthRight += brickHeight;
+    }
+    else
+    {
+        laserDummyLengthRight -= brickHeight;
     }
     for(c=0; c<brickColumnCount; c++)
     {
@@ -346,30 +356,29 @@ function drawDummyAngles()
             var b = bricks[c][r];
             if(b.status == 1)
             {
-                if (paddleX + (paddle.width/2) + ballCollisionDxRight > b.x && paddleX + (paddle.width/2) + ballCollisionDxRight < b.x+brickWidth && paddleY - ballCollisionDyRight > b.y && paddleY - ballCollisionDyRight < b.y+brickHeight)
+                if (paddleX + (paddle.width/2) + laserDummyDxRight > b.x && paddleX + (paddle.width/2) + laserDummyDxRight < b.x+brickWidth && paddleY - laserDummyDyRight > b.y && paddleY - laserDummyDyRight < b.y+brickHeight)
                 {
-                    dummyAnglesDistanceRight -= brickHeight;
+                    laserDummyLengthRight -= brickHeight;
                 }
-                if (paddleX + (paddle.width/2) - ballCollisionDxLeft > b.x && paddleX + (paddle.width/2) - ballCollisionDxLeft < b.x+brickWidth && paddleY - ballCollisionDyLeft > b.y && paddleY - ballCollisionDyLeft < b.y+brickHeight)
+                if (paddleX + (paddle.width/2) - laserDummyDxLeft > b.x && paddleX + (paddle.width/2) - laserDummyDxLeft < b.x+brickWidth && paddleY - laserDummyDyLeft > b.y && paddleY - laserDummyDyLeft < b.y+brickHeight)
                 {
-                    dummyAnglesDistanceLeft -= brickHeight;
+                    laserDummyLengthLeft -= brickHeight;
                 }
             }
         }
     }
-    ballCollisionDxRight = dummyAnglesDistanceRight * Math.cos(angleDummyPaddle * Math.PI / 180); //degré * (Math.PI / 180) => convertir degrés en gradiants.
-    ballCollisionDyRight = dummyAnglesDistanceRight * Math.sin(angleDummyPaddle * Math.PI / 180);
-    ballCollisionDxLeft = dummyAnglesDistanceLeft * Math.cos(angleDummyPaddle * Math.PI / 180);
-    ballCollisionDyLeft = dummyAnglesDistanceLeft * Math.sin(angleDummyPaddle * Math.PI / 180);
-    if (dummyAngleRefresh >= 29 && toPlay == 1)
+    laserDummyDxRight = laserDummyLengthRight * Math.cos(angleDummyPaddle * Math.PI / 180); //degré * (Math.PI / 180) => convertir degrés en gradiants.
+    laserDummyDyRight = laserDummyLengthRight * Math.sin(angleDummyPaddle * Math.PI / 180);
+    laserDummyDxLeft = laserDummyLengthLeft * Math.cos(angleDummyPaddle * Math.PI / 180);
+    laserDummyDyLeft = laserDummyLengthLeft * Math.sin(angleDummyPaddle * Math.PI / 180);
+    if (dummyAngleRefresh >= 5 && toPlay == 1)
     {
-        laserDxRight = ballCollisionDxRight;
-        laserDyRight = ballCollisionDyRight;
-        laserDxLeft = ballCollisionDxLeft;
-        laserDyLeft = ballCollisionDyLeft;
+        laserDxRight = laserDummyDxRight;
+        laserDyRight = laserDummyDyRight;
+        laserDxLeft = laserDummyDxLeft;
+        laserDyLeft = laserDummyDyLeft;
     }
     dummyAngleRefresh++;
-
 
     ctx.beginPath();
     ctx.moveTo(paddleX + paddle.width/2, paddleY);
@@ -385,7 +394,7 @@ function drawDummyAngles()
     ctx.lineWidth = 2;
     ctx.strokeStyle = "rgba(225, 25, 25, .5)";
     ctx.stroke();
-    ctx.closePath();   
+    ctx.closePath();  
 }
 
 function drawBall()
@@ -641,5 +650,6 @@ function reInit()
     paddle.height = paddleHeight;
 }
 genMap();
+calcLaserLengthAtBirth()
 draw();
 launchCountdown();
