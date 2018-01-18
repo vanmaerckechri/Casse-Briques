@@ -305,20 +305,17 @@ function changeBallAngle()
 
 var dummyAnglesDistanceRight;
 var dummyAnglesDistanceLeft;
-var laserDxRight = ballCollisionDxRight;
-var laserDyRight = ballCollisionDyRight;
-var laserDxLeft = ballCollisionDxLeft;
-var laserDyLeft = ballCollisionDyLeft;
 
 function drawDummyAngles()
 {  
-    if (dummyAngleRefresh >= 30 && toPlay == 1)
+    dummyAngleRefresh++;
+    if (dummyAngleRefresh >= 60)
     {
-        ballCollisionDxRight = 30;
-        ballCollisionDyRight = 30;
-        ballCollisionDxLeft = 30;
-        ballCollisionDyLeft = 30;
-        dummyAngleRefresh = 0;
+        ballCollisionDxRight = 20;
+        ballCollisionDyRight = 20;
+        ballCollisionDxLeft = 20;
+        ballCollisionDyLeft = 20;
+        dummyAngleRefresh =0;
     }
     dummyAnglesDistanceLeft = Math.sqrt(Math.pow(ballCollisionDxLeft, 2)+Math.pow(ballCollisionDyLeft, 2));
     dummyAnglesDistanceRight = Math.sqrt(Math.pow(ballCollisionDxRight, 2)+Math.pow(ballCollisionDyRight, 2));
@@ -361,19 +358,10 @@ function drawDummyAngles()
     ballCollisionDyRight = dummyAnglesDistanceRight * Math.sin(angleDummyPaddle * Math.PI / 180);
     ballCollisionDxLeft = dummyAnglesDistanceLeft * Math.cos(angleDummyPaddle * Math.PI / 180);
     ballCollisionDyLeft = dummyAnglesDistanceLeft * Math.sin(angleDummyPaddle * Math.PI / 180);
-    if (dummyAngleRefresh >= 29 && toPlay == 1)
-    {
-        laserDxRight = ballCollisionDxRight;
-        laserDyRight = ballCollisionDyRight;
-        laserDxLeft = ballCollisionDxLeft;
-        laserDyLeft = ballCollisionDyLeft;
-    }
-    dummyAngleRefresh++;
-
 
     ctx.beginPath();
     ctx.moveTo(paddleX + paddle.width/2, paddleY);
-    ctx.lineTo(paddleX + (paddle.width/2) + laserDxRight, paddleY - laserDyRight);
+    ctx.lineTo(paddleX + (paddle.width/2) + ballCollisionDxRight, paddleY - ballCollisionDyRight);
     ctx.lineWidth = 2;
     ctx.strokeStyle = "rgba(225, 25, 25, .5)";
     ctx.stroke();
@@ -381,7 +369,7 @@ function drawDummyAngles()
 
     ctx.beginPath();
     ctx.moveTo(paddleX + paddle.width/2, paddleY);
-    ctx.lineTo(paddleX + (paddle.width/2) - laserDxLeft, paddleY - laserDyLeft);
+    ctx.lineTo(paddleX + (paddle.width/2) - ballCollisionDxLeft, paddleY - ballCollisionDyLeft);
     ctx.lineWidth = 2;
     ctx.strokeStyle = "rgba(225, 25, 25, .5)";
     ctx.stroke();
@@ -558,12 +546,12 @@ function drawLives() {
 function draw()
 {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawDummyAngles();
     drawBricks();
     drawBonus();
     drawParticles();
     drawBall();
     drawPaddle();
+    drawDummyAngles();
     drawScore();
     drawLives();
     collisionDetection();

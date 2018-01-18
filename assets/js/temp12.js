@@ -24,10 +24,10 @@ var leftPressed = false;
 var angleDummyPaddle = 45; //vitesse
 var decreaseAnglePressed = false;
 var increaseAnglePressed = false;
-var ballCollisionDxLeft = 30;
-var ballCollisionDyLeft = 30;
-var ballCollisionDxRight = 30;
-var ballCollisionDyRight = 30;
+var laserDummyDxLeft = 30;
+var laserDummyDyLeft = 30;
+var laserDummyDxRight = 30;
+var laserDummyDyRight = 30;
 var dummyAngleRefresh = 0;
 // bonus
 var bonusNbrDif = 4;
@@ -303,41 +303,43 @@ function changeBallAngle()
 }
 
 
-var dummyAnglesDistanceRight;
-var dummyAnglesDistanceLeft;
-var laserDxRight = ballCollisionDxRight;
-var laserDyRight = ballCollisionDyRight;
-var laserDxLeft = ballCollisionDxLeft;
-var laserDyLeft = ballCollisionDyLeft;
+var laserDummyLengthRight;
+var laserDummyLengthLeft;
+var laserDxRight = laserDummyDxRight;
+var laserDyRight = laserDummyDyRight;
+var laserDxLeft = laserDummyDxLeft;
+var laserDyLeft = laserDummyDyLeft;
 
+var AnglesDistanceRight;
 function drawDummyAngles()
 {  
-    if (dummyAngleRefresh >= 30 && toPlay == 1)
+    dummyAngleRefresh++;
+    if (dummyAngleRefresh >= 60 && toPlay == 1)
     {
-        ballCollisionDxRight = 30;
-        ballCollisionDyRight = 30;
-        ballCollisionDxLeft = 30;
-        ballCollisionDyLeft = 30;
-        dummyAngleRefresh = 0;
+        laserDummyDxRight = 20;
+        laserDummyDyRight = 20;
+        laserDummyDxLeft = 20;
+        laserDummyDyLeft = 20;
+        dummyAngleRefresh =0;
     }
-    dummyAnglesDistanceLeft = Math.sqrt(Math.pow(ballCollisionDxLeft, 2)+Math.pow(ballCollisionDyLeft, 2));
-    dummyAnglesDistanceRight = Math.sqrt(Math.pow(ballCollisionDxRight, 2)+Math.pow(ballCollisionDyRight, 2));
-    console.log(dummyAnglesDistanceLeft);
-    if (paddleX + (paddle.width/2) - ballCollisionDxLeft > 0)
+    laserDummyLengthLeft = Math.sqrt(Math.pow(laserDummyDxLeft, 2)+Math.pow(laserDummyDyLeft, 2));
+    laserDummyLengthRight = Math.sqrt(Math.pow(laserDummyDxRight, 2)+Math.pow(laserDummyDyRight, 2));
+    console.log(laserDummyLengthLeft);
+    if (paddleX + (paddle.width/2) - laserDummyDxLeft > 0)
     {
-        dummyAnglesDistanceLeft += brickHeight;
-    }
-    else
-    {
-        dummyAnglesDistanceLeft -= brickHeight;
-    }
-    if (paddleX + (paddle.width/2) + ballCollisionDxRight < canvas.width)
-    {
-        dummyAnglesDistanceRight += brickHeight;
+        laserDummyLengthLeft += brickHeight;
     }
     else
     {
-        dummyAnglesDistanceRight -= brickHeight;
+        laserDummyLengthLeft--;
+    }
+    if (paddleX + (paddle.width/2) + laserDummyDxRight < canvas.width)
+    {
+        laserDummyLengthRight += brickHeight;
+    }
+    else
+    {
+        laserDummyLengthRight--;
     }
     for(c=0; c<brickColumnCount; c++)
     {
@@ -346,30 +348,29 @@ function drawDummyAngles()
             var b = bricks[c][r];
             if(b.status == 1)
             {
-                if (paddleX + (paddle.width/2) + ballCollisionDxRight > b.x && paddleX + (paddle.width/2) + ballCollisionDxRight < b.x+brickWidth && paddleY - ballCollisionDyRight > b.y && paddleY - ballCollisionDyRight < b.y+brickHeight)
+                if (paddleX + (paddle.width/2) + laserDummyDxRight > b.x && paddleX + (paddle.width/2) + laserDummyDxRight < b.x+brickWidth && paddleY - laserDummyDyRight > b.y && paddleY - laserDummyDyRight < b.y+brickHeight)
                 {
-                    dummyAnglesDistanceRight -= brickHeight;
+                    laserDummyLengthRight -= brickHeight;
                 }
-                if (paddleX + (paddle.width/2) - ballCollisionDxLeft > b.x && paddleX + (paddle.width/2) - ballCollisionDxLeft < b.x+brickWidth && paddleY - ballCollisionDyLeft > b.y && paddleY - ballCollisionDyLeft < b.y+brickHeight)
+                if (paddleX + (paddle.width/2) - laserDummyDxLeft > b.x && paddleX + (paddle.width/2) - laserDummyDxLeft < b.x+brickWidth && paddleY - laserDummyDyLeft > b.y && paddleY - laserDummyDyLeft < b.y+brickHeight)
                 {
-                    dummyAnglesDistanceLeft -= brickHeight;
+                    laserDummyLengthLeft -= brickHeight;
                 }
             }
         }
     }
-    ballCollisionDxRight = dummyAnglesDistanceRight * Math.cos(angleDummyPaddle * Math.PI / 180); //degré * (Math.PI / 180) => convertir degrés en gradiants.
-    ballCollisionDyRight = dummyAnglesDistanceRight * Math.sin(angleDummyPaddle * Math.PI / 180);
-    ballCollisionDxLeft = dummyAnglesDistanceLeft * Math.cos(angleDummyPaddle * Math.PI / 180);
-    ballCollisionDyLeft = dummyAnglesDistanceLeft * Math.sin(angleDummyPaddle * Math.PI / 180);
-    if (dummyAngleRefresh >= 29 && toPlay == 1)
-    {
-        laserDxRight = ballCollisionDxRight;
-        laserDyRight = ballCollisionDyRight;
-        laserDxLeft = ballCollisionDxLeft;
-        laserDyLeft = ballCollisionDyLeft;
-    }
-    dummyAngleRefresh++;
+    laserDummyDxRight = laserDummyLengthRight * Math.cos(angleDummyPaddle * Math.PI / 180); //degré * (Math.PI / 180) => convertir degrés en gradiants.
+    laserDummyDyRight = laserDummyLengthRight * Math.sin(angleDummyPaddle * Math.PI / 180);
+    laserDummyDxLeft = laserDummyLengthLeft * Math.cos(angleDummyPaddle * Math.PI / 180);
+    laserDummyDyLeft = laserDummyLengthLeft * Math.sin(angleDummyPaddle * Math.PI / 180);
 
+    if (dummyAngleRefresh >= 59 && toPlay == 1)
+    {
+        laserDxRight = laserDummyDxRight;
+        laserDYRight = laserDummyDyRight;
+        laserDxLeft = laserDummyDxLeft;
+        laserDyLeft = laserDummyDyLeft;
+    }
 
     ctx.beginPath();
     ctx.moveTo(paddleX + paddle.width/2, paddleY);
@@ -558,12 +559,12 @@ function drawLives() {
 function draw()
 {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawDummyAngles();
     drawBricks();
     drawBonus();
     drawParticles();
     drawBall();
     drawPaddle();
+    drawDummyAngles();
     drawScore();
     drawLives();
     collisionDetection();
