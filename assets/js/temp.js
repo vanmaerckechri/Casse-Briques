@@ -323,8 +323,8 @@ function drawDummyAngles()
     }
     dummyAnglesDistanceLeft = Math.sqrt(Math.pow(ballCollisionDxLeft, 2)+Math.pow(ballCollisionDyLeft, 2));
     dummyAnglesDistanceRight = Math.sqrt(Math.pow(ballCollisionDxRight, 2)+Math.pow(ballCollisionDyRight, 2));
-
-    if (paddleX + (paddle.width/2) - ballCollisionDxLeft < canvas.width)
+    console.log(dummyAnglesDistanceLeft);
+    if (paddleX + (paddle.width/2) - ballCollisionDxLeft > 0)
     {
         dummyAnglesDistanceLeft += brickHeight;
     }
@@ -351,6 +351,11 @@ function drawDummyAngles()
                 {
                     dummyAnglesDistanceRight -= brickHeight;
                 }
+                if (paddleX + (paddle.width/2) - ballCollisionDxLeft > b.x && paddleX + (paddle.width/2) - ballCollisionDxLeft < b.x+brickWidth && paddleY - ballCollisionDyLeft > b.y && paddleY - ballCollisionDyLeft < b.y+brickHeight)
+                {
+                    dummyAnglesDistanceLeft -= brickHeight;
+                }
+
   
             }
 
