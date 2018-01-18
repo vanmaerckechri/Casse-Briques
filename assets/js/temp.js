@@ -428,12 +428,17 @@ function drawBricks()
                 ctx.rect(brickX, brickY, brickWidth, brickHeight);
                 if (bricks[c][r].type == 0 || bricks[c][r].type == 1)
                 {
+                    ctx.lineWidth = 5;
                     ctx.fillStyle = "rgba(40, 150, 175, .9)";
+                    ctx.strokeStyle = "rgba(40, 75, 87, .9)";
                 }
                 else if (bricks[c][r].type == 2)
                 {
+                    ctx.lineWidth = 5;
                     ctx.fillStyle = "rgba(100, 90, 100, .9)";
+                    ctx.strokeStyle = "rgba(100, 45, 50, .9)";
                 }
+                ctx.stroke();
                 ctx.fill();
                 ctx.closePath();
             }
