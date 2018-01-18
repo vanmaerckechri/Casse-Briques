@@ -28,6 +28,8 @@ var ballCollisionDxLeft = 30;
 var ballCollisionDyLeft = 30;
 var ballCollisionDxRight = 30;
 var ballCollisionDyRight = 30;
+var dummyRefresh = 0;
+
 // bonus
 var bonusNbrDif = 4;
 var bonusNbrIngame = 3;
@@ -149,6 +151,7 @@ function keyDownHandler(e)
 	    {
 	        increaseAnglePressed = true;
 	    }
+        dummyRefresh = true;
 	}
 }
 function keyUpHandler(e)
@@ -309,59 +312,54 @@ var test;
 
 function drawDummyAngles()
 {  
-    console.log(dummyAnglesDistanceLeft);
+    console.log(dummyRefresh);
+    if (dummyRefresh == true)
+    {
+    ballCollisionDxRight = 20;
+    ballCollisionDyRight = 20;
+    ballCollisionDxLeft = 20;
+    ballCollisionDyLeft = 20;
+    dummyRefresh = false;
+    }
     dummyAnglesDistanceLeft = Math.sqrt(Math.pow(ballCollisionDxLeft, 2)+Math.pow(ballCollisionDyLeft, 2));
     dummyAnglesDistanceRight = Math.sqrt(Math.pow(ballCollisionDxRight, 2)+Math.pow(ballCollisionDyRight, 2));
 
-
-        for(c=0; c<brickColumnCount; c++)
+    if (paddleX + (paddle.width/2) - ballCollisionDxLeft < canvas.width)
+    {
+        dummyAnglesDistanceLeft += brickHeight;
+    }
+    else
+    {
+        dummyAnglesDistanceLeft -= brickHeight;
+    }
+    if (paddleX + (paddle.width/2) + ballCollisionDxRight < canvas.width)
+    {
+        dummyAnglesDistanceRight += brickHeight;
+    }
+    else
+    {
+        dummyAnglesDistanceRight -= brickHeight;
+    }
+    for(c=0; c<brickColumnCount; c++)
+    {
+        for(r=0; r<brickRowCount; r++)
         {
-            for(r=0; r<brickRowCount; r++)
+            var b = bricks[c][r];
+            if(b.status == 1)
             {
-                var b = bricks[c][r];
-                if(b.status == 1)
+                if (paddleX + (paddle.width/2) + ballCollisionDxRight > b.x && paddleX + (paddle.width/2) + ballCollisionDxRight < b.x+brickWidth && paddleY - ballCollisionDyRight > b.y && paddleY - ballCollisionDyRight < b.y+brickHeight)
                 {
-                        /*if (paddleX + (paddle.width/2) + ballCollisionDxRight > b.x && paddleX + (paddle.width/2) + ballCollisionDxRight < b.x+brickWidth && ballCollisionDyRight > b.y && ballCollisionDyRight < b.y+brickHeight)
-                        {
-
-                            return;
-                        }*/
+                    dummyAnglesDistanceRight -= brickHeight;
                 }
-
+  
             }
-        }
-        if (paddleX + (paddle.width/2) + ballCollisionDxRight < canvas.width)
-        {
-            dummyAnglesDistanceRight += brickHeight;
 
         }
-        else
-        {
-            dummyAnglesDistanceRight -= brickHeight;
-        }
-        ballCollisionDxRight = dummyAnglesDistanceRight * Math.cos(angleDummyPaddle * Math.PI / 180); //degré * (Math.PI / 180) => convertir degrés en gradiants.
-        ballCollisionDyRight = dummyAnglesDistanceRight * Math.sin(angleDummyPaddle * Math.PI / 180);
-        if (paddleX + (paddle.width/2) - ballCollisionDxLeft > 0)
-        {
-            dummyAnglesDistanceLeft += brickHeight;
-
-        }
-        else
-        {
-            dummyAnglesDistanceLeft -= brickHeight;
-        }
-        ballCollisionDxLeft = dummyAnglesDistanceLeft * Math.cos(angleDummyPaddle * Math.PI / 180);
-        ballCollisionDyLeft = dummyAnglesDistanceLeft * Math.sin(angleDummyPaddle * Math.PI / 180);
-
-
-
-        /*if (ballCollisionDxRight <= canvas.width || ballCollisionDxRight > 0)
-        {
-            distance += brickHeight;
-            ballCollisionDxRight = distance * Math.cos(angleDummyPaddle * Math.PI / 180); //degré * (Math.PI / 180) => convertir degrés en gradiants.
-            ballCollisionDyRight = distance * Math.sin(angleDummyPaddle * Math.PI / 180);
-            clearInterval(dummyAngles);
-        }*/
+    }
+    ballCollisionDxRight = dummyAnglesDistanceRight * Math.cos(angleDummyPaddle * Math.PI / 180); //degré * (Math.PI / 180) => convertir degrés en gradiants.
+    ballCollisionDyRight = dummyAnglesDistanceRight * Math.sin(angleDummyPaddle * Math.PI / 180);
+    ballCollisionDxLeft = dummyAnglesDistanceLeft * Math.cos(angleDummyPaddle * Math.PI / 180);
+    ballCollisionDyLeft = dummyAnglesDistanceLeft * Math.sin(angleDummyPaddle * Math.PI / 180);
 
     ctx.beginPath();
     ctx.moveTo(paddleX + paddle.width/2, paddleY);
