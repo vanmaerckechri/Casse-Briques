@@ -436,7 +436,7 @@ function drawBricks()
                 {
                     ctx.lineWidth = 5;
                     ctx.fillStyle = "rgba(100, 90, 100, .9)";
-                    ctx.strokeStyle = "rgba(100, 45, 50, .9)";
+                    ctx.strokeStyle = "rgba(80, 60, 75, .9)";
                 }
                 ctx.stroke();
                 ctx.fill();
@@ -570,8 +570,8 @@ function draw()
     drawBricks();
     drawBonus();
     drawParticles();
-    drawBall();
     drawPaddle();
+    drawBall();
     drawScore();
     drawLives();
     collisionDetection();
@@ -583,9 +583,9 @@ function draw()
     {
         dy = -dy;
     }
-    else if(y + dy > canvas.height - ballRadius - paddleHeight) // sortie balle sol
+    else if(y + dy > canvas.height - ballRadius) // sortie balle sol
     {
-        if(x - ballRadius > paddleX && x - ballRadius < paddleX + paddle.width) // sauf si rebonds balle joueur
+        if(x + ballRadius > paddleX && x - ballRadius < paddleX + paddle.width) // sauf si rebonds balle joueur
         {
             changeBallAngle();
             dy = -dy;
