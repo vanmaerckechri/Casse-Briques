@@ -44,6 +44,7 @@ img00.src = 'assets/img/bonus_increaseWidth.png';
 img01.src = 'assets/img/bonus_decreaseWidth.png';
 img02.src = 'assets/img/bonus_decreaseSpeedBall.png';
 img03.src = 'assets/img/bonus_increaseSpeedBall.png';
+var bonusImgWidth = 25;
 //briques
 var brickRowCount = 3;
 var brickColumnCount = 8;
@@ -151,7 +152,6 @@ function keyDownHandler(e)
 	    if(e.keyCode == 39)
 	    {
 	        rightPressed = true;
-            console.log(laserDummyLengthRight);
 	    }
 	    else if(e.keyCode == 37)
 	    {
@@ -257,9 +257,9 @@ function collisionDetection()
 
 }
 
-function collisionBonus(briqueX, briqueY, brique)
+function collisionBonus(bonusX, bonusY, brique)
 {
-    if (briqueX > paddleX && briqueX < paddleX + paddleWidth && brique.bonusY > paddleY && brique.bonusY < paddleY + paddleHeight)
+    if (bonusX + bonusImgWidth > paddleX && bonusX < paddleX + paddle.width && bonusY > paddleY && bonusY < paddleY + paddleHeight)
     {
         if (brique.bonus == 0 && paddle.width < 140)
         {
@@ -299,9 +299,9 @@ function collisionBonus(briqueX, briqueY, brique)
             dy = dy*2;
             changeBallAngle();
         }
-        briqueY = canvas.height + 50;
+        bonusY = canvas.height + 50;
     }
-    if (briqueY > canvas.height)
+    if (bonusY > canvas.height)
     {
         brique.type = 0;
     }
@@ -330,7 +330,6 @@ function drawDummyAngles()
         laserDummyDxRight = laserDummyLengthRight * Math.cos(angleDummyPaddle * Math.PI / 180);
 
         dummyAngleRefresh = 0;
-        console.log(laserDummyDxLeft);
     }
 
     if (paddleX + (paddle.width/2) - laserDummyDxLeft > 0)
@@ -456,7 +455,7 @@ function drawBonus()
             if(brique.status == 0 && brique.type == 1)
             {
                 let nomVariableImg = 'img0'+brique.bonus;
-                ctx.drawImage(eval(nomVariableImg), brique.x+brickWidth/2-12.5, brique.bonusY+brickHeight/2-12.5, 25, 25);
+                ctx.drawImage(eval(nomVariableImg), brique.x+brickWidth/2-bonusImgWidth/2, brique.bonusY+brickHeight/2-bonusImgWidth/2, bonusImgWidth, bonusImgWidth);
                 collisionBonus(brique.x, brique.bonusY, brique); // PROBLEME ATTRIBUTS !!!!!!!!!
                 brique.bonusY += 3;
             }
