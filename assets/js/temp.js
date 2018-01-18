@@ -9,16 +9,19 @@ var x = canvas.width/2; //position au commencement de la partie
 var y = canvas.height-30;
 var dx = 0; // vitesse de deplacement
 var dy = 0;
+var ballSpeedDefaut = 4;
+var ballSpeedNow = ballSpeedDefaut;
 //joueur
 var paddleWidth = 90;
 var paddleHeight = 10;
-var paddle = {width: paddleWidth, height: paddleHeight};
+var bonusIncreDecrePadWidth = 40
+var paddle = {width: paddleWidth, height: paddleHeight, bonusIncrePadWidth: bonusIncreDecrePadWidth, bonusDecrePadWidth: bonusIncreDecrePadWidth};
 var paddleX = (canvas.width-paddleWidth)/2; //position au commencement de la partie
 var paddleY = canvas.height-paddleHeight
 var speedPlayer = 7;
 var rightPressed = false;
 var leftPressed = false;
-var angleDummyPaddle = 45;
+var angleDummyPaddle = 45; //vitesse
 var decreaseAnglePressed = false;
 var increaseAnglePressed = false;
 var ballCollisionDx = 30;
@@ -235,25 +238,48 @@ function collisionDetection()
     }
 
 }
-function collisionBonus(briqueX, briqueY, brique) // C EST DE LA MERDE !!!
+
+function collisionBonus(briqueX, briqueY, brique)
 {
     if (briqueX > paddleX && briqueX < paddleX + paddleWidth && brique.bonusY > paddleY && brique.bonusY < paddleY + paddleHeight)
     {
         if (brique.bonus == 0 && paddle.width < 140)
         {
-            paddle.width = paddle.width + 20;
+            let increaseTemp = setInterval(function()
+            {
+                paddle.width++;
+                paddle.bonusIncrePadWidth--;
+                if (paddle.bonusIncrePadWidth <= 0)
+                {
+                    clearInterval(increaseTemp);
+                    paddle.bonusIncrePadWidth = bonusIncreDecrePadWidth;
+                }
+            }, 10);
         }
         if (brique.bonus == 1 && paddle.width > 50)
-        {
-            paddle.width = paddle.width - 20;
+        {            
+            let decreaseTemp = setInterval(function()
+            {
+                paddle.width--;
+                paddle.bonusDecrePadWidth--;
+                if (paddle.bonusDecrePadWidth <= 0)
+                {
+                    clearInterval(decreaseTemp);
+                    paddle.bonusDecrePadWidth = bonusIncreDecrePadWidth;
+                }
+            }, 10);
         }
-        if (brique.bonus == 1 && dx > 2)
+        if (brique.bonus == 2 && dx >= 3 || brique.bonus == 2 && dx <= 3)
         {
-            dx--;
+            dx = dx/2;
+            dy = dy/2;
+            changeBallAngle();        
         }
-        if (brique.bonus == 1 && dx < 2)
+        if (brique.bonus == 3 && dx <= 5 || brique.bonus == 3 && dx >= -5)
         {
-            dx++;
+            dx = dx*2;
+            dy = dy*2;
+            changeBallAngle();
         }
         briqueY = canvas.height + 50;
     }
@@ -508,11 +534,11 @@ function draw()
     
     if(rightPressed && paddleX < canvas.width-paddle.width)
     {
-        paddleX += 7;
+        paddleX += speedPlayer;
     }
     else if(leftPressed && paddleX > 0)
     {
-        paddleX -= 7;
+        paddleX -= speedPlayer;
     }
 
     if(decreaseAnglePressed == true && angleDummyPaddle > 20)
@@ -544,6 +570,8 @@ function reInit()
     y = canvas.height-30;
     angleDummyPaddle = 45;
     paddleX = (canvas.width-paddleWidth)/2;
+    paddle.width = paddleWidth;
+    paddle.height = paddleHeight;
 }
 genMap();
 draw();
