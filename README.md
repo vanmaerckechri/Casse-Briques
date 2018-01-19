@@ -14,3 +14,4 @@ Réalisé durant la formation [Becode](http://www.becode.org/). Approfondir les 
   * 'Moteur' de particules maison pour les briques.
   * Compte à rebours entre les morts.
   * Ajout de Bonus/Malus.
+  * Ajout le choix de l'angle que prendra la balle lors de la collision avec le joueur.
