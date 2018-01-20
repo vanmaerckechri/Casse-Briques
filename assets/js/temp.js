@@ -36,9 +36,7 @@ var laserDxLeft = laserDummyDxLeft;
 var laserDyLeft = laserDummyDyLeft;
 var laserLengthAtBirth = 0;
 var dummyAngleRefresh = 0;
-// bonus
-var bonusNbrDif = 4;
-var bonusNbrIngame = 3;
+
 var img00 = new Image(), img01 = new Image(), img02 = new Image(), img03 = new Image();
 img00.src = 'assets/img/bonus_increaseWidth.png';
 img01.src = 'assets/img/bonus_decreaseWidth.png';
@@ -61,7 +59,6 @@ var brickGenIndexCol = 0;
 var brickType = 0;
 var briquesNbrPourVictoire = 0;
 var brickBelowOthersFromTop = 0;
-var brickBonusNumber = 3;
 var bricks = [];
 var bricksGenLvl = [];
 var bricksGenLvl01 = [ // array 1 = briques bonus. array 2 = briques incassables.
@@ -72,6 +69,12 @@ var bricksGenLvl01 = [ // array 1 = briques bonus. array 2 = briques incassables
 var bricksGenLvl02;
 var bricksGenLvlIndex = 0;
 bricksGenLvl.push(bricksGenLvl01, bricksGenLvl02);
+// bonus
+var bonusNbrDif = 4;
+var brickBonusNumber = 20;
+var bonus = [];
+var bonusIndexInstall = 0;
+
 
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
@@ -149,15 +152,19 @@ function genMap()
         		briquesNbrPourVictoire++
         	}
 			convertVisualArray();
-            bricks[c][r] = { x: 0, y: 0, status: 1, type: brickType, bonus: -1, bonusY: brickOffsetTop, cycleParticles: 0, particlePosX : [], particulePosY: [], particuleDirection: 0, colorR: [], colorG: [], colorB: []};
-            let brique = bricks[c][r];
+            bricks[c][r] = { x: 0, y: 0, status: 1, type: brickType, bonus: -1, cycleParticles: 0, particlePosX : [], particulePosY: [], particuleDirection: 0, colorR: [], colorG: [], colorB: []};
             if (brickType == 1)
             {
-                brique.bonus = Math.floor(Math.random()*bonusNbrDif);
+                bricks[c][r].bonus = Math.floor(Math.random()*bonusNbrDif);
+                bonus[bonusIndexInstall] = {x: 0, y: 0, status: 0, type: 0};
+                bonus[bonusIndexInstall].type = bricks[c][r].bonus;
+                console.log("index bonus: "+bricks[c][r].bonus);
+                bonusIndexInstall++;
             }
             brickType = 0;
         }
     }
+    bonusIndexInstall = 0;
 }
 
 function keyDownHandler(e)
@@ -225,6 +232,37 @@ function recordPaddleDirection(c, r)
     }
 }
 
+/*function drawBonus(brique)
+{
+    let bonus = brique.bonus;
+    let nomVariableImg = 'img0'+bonus;
+    ctx.drawImage(eval(nomVariableImg), bonusIndexInstall[].x + brickWidth /2 - bonusImgWidth /2, brique.bonusY + brickHeight /2  -bonusImgWidth /2, bonusImgWidth, bonusImgWidth);
+    collisionBonus(brique.x, brique.bonusY, brique); // PROBLEME ATTRIBUTS !!!!!!!!!
+    brique.bonusY += 3;
+
+}*/
+
+function drawBonus()
+{
+    for (i = 0; i < bonusIndexInstall; i++)
+    {
+        if (bonus[i].status == 1)
+        {
+            let bonusImg = new Image();
+            bonusImg.src = 'assets/img/bonus0'+bonus[i].type+'.png';
+            console.log(bonusImg.src);
+            ctx.drawImage(bonusImg, bonus[i].x, bonus[i].y, bonusImgWidth, bonusImgWidth);
+        }
+    }   
+}
+function activeBonus(brique, briqueX, briqueY)
+{           
+        bonus[bonusIndexInstall].status = 1;
+        bonus[bonusIndexInstall].x = briqueX + brickWidth/2 - bonusImgWidth/2;
+        bonus[bonusIndexInstall].y = briqueY + brickHeight/2 - bonusImgWidth/2;
+        bonusIndexInstall++;
+}
+
 function collisionDetection()
 {
     for(c=0; c<brickColumnCount; c++)
@@ -243,6 +281,11 @@ function collisionDetection()
                     	b.status = 0;
                         b.cycleParticles = 1;
                     	score++;
+                        if (b.type == 1)
+                        {
+                            console.log(b.type);
+                            activeBonus(b, b.x, b.y);
+                        }
                     }
                     if(score == briquesNbrPourVictoire)
                     {
@@ -259,6 +302,11 @@ function collisionDetection()
                     	b.status = 0;
                         b.cycleParticles = 1;
                     	score++;
+                        if (b.type == 1)
+                        {
+                            console.log(b.type);
+                            activeBonus(b, b.x, b.y);
+                        }
                     }
                     if(score == briquesNbrPourVictoire)
                     {
@@ -466,23 +514,7 @@ function drawBricks()
         }
     }
 }
-function drawBonus() //systeme brouillon, mettre les bonus aléatoirement dans un tableau => plus léger, plus clair, plus modulable. Brique bonus casse, on prend le bonus dans l'index actuel du tableau et on en change le status.
-{
-    for(c=0; c<brickColumnCount; c++)
-    {
-        for(r=0; r<brickRowCount; r++)
-        {
-            let brique = bricks[c][r];
-            if(brique.status == 0 && brique.type == 1 && brique.bonus >= 0)
-            {
-                let nomVariableImg = 'img0'+brique.bonus;
-                ctx.drawImage(eval(nomVariableImg), brique.x+brickWidth/2-bonusImgWidth/2, brique.bonusY+brickHeight/2-bonusImgWidth/2, bonusImgWidth, bonusImgWidth);
-                collisionBonus(brique.x, brique.bonusY, brique); // PROBLEME ATTRIBUTS !!!!!!!!!
-                brique.bonusY += 3;
-            }
-        }
-    }
-}
+
 function drawParticles()
 {
     let particlesMax = 30;
