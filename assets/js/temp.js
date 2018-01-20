@@ -71,7 +71,7 @@ var bricksGenLvlIndex = 0;
 bricksGenLvl.push(bricksGenLvl01, bricksGenLvl02);
 // bonus
 var bonusNbrDif = 4;
-var brickBonusNumber = 20;
+var brickBonusNumber = 3;
 var bonus = [];
 var bonusIndexInstall = 0;
 
@@ -501,7 +501,7 @@ function drawBricks()
                 else if (bricks[c][r].type == 1)
                 {
                     ctx.lineWidth = 5;
-                    ctx.fillStyle = "rgba(100, 100, 150, .9)";
+                    ctx.fillStyle = "rgba(40, 150, 175, .9)";
                     ctx.strokeStyle = "rgba(40, 75, 87, .9)";
                 }
                 else if (bricks[c][r].type == 2)
