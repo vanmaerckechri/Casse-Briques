@@ -69,9 +69,10 @@ var bricksGenLvl01 = [ // array 1 = briques bonus. array 2 = briques incassables
     2, 0, 2, 0, 0, 2, 0, 2,
     0, 0, 0, 0, 0, 0, 0, 0
     ];
+var bricksGenLvl02;
 var bricksGenLvlIndex = 0;
-bricksGenLvl[0] = bricksGenLvl01;
-    
+bricksGenLvl.push(bricksGenLvl01, bricksGenLvl02);
+
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 
@@ -108,14 +109,14 @@ function launchCountdown()
 
 function genBonusInRandBricks()
 {
-    let bricksNumber = bricksGenLvl[0].length;
+    let bricksNumber = bricksGenLvl[bricksGenLvlIndex].length;
     let selectBrickBonus;
     while (brickBonusNumber > 0)
     {
         selectBrickBonus = Math.floor(Math.random()*bricksNumber);
-        if(bricksGenLvl[0][selectBrickBonus] == 0)
+        if(bricksGenLvl[bricksGenLvlIndex][selectBrickBonus] == 0)
         {
-            bricksGenLvl[0][selectBrickBonus] = 1;
+            bricksGenLvl[bricksGenLvlIndex][selectBrickBonus] = 1;
             brickBonusNumber--;
         }
     }
@@ -142,7 +143,7 @@ function genMap()
         bricks[c] = [];
         for(r=0; r<brickRowCount; r++)
         {
-        	brickType = bricksGenLvl01[brickGenIndex];
+        	brickType = bricksGenLvl[bricksGenLvlIndex][brickGenIndex];
         	if (brickType <= 1) // type 0 = destructible, type 1 = destructible + bonus
         	{
         		briquesNbrPourVictoire++
