@@ -61,13 +61,16 @@ var brickGenIndexCol = 0;
 var brickType = 0;
 var briquesNbrPourVictoire = 0;
 var brickBelowOthersFromTop = 0;
-
+var brickBonusNumber = 3;
 var bricks = [];
+var bricksGenLvl = [];
 var bricksGenLvl01 = [ // array 1 = briques bonus. array 2 = briques incassables.
-    0, 0, 0, 1, 0, 0, 0, 1,
+    0, 0, 0, 0, 0, 0, 0, 0,
     2, 0, 2, 0, 0, 2, 0, 2,
-    0, 0, 0, 0, 1, 0, 0, 0
+    0, 0, 0, 0, 0, 0, 0, 0
     ];
+var bricksGenLvlIndex = 0;
+bricksGenLvl[0] = bricksGenLvl01;
     
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
@@ -103,6 +106,21 @@ function launchCountdown()
         }, 1000);
 }
 
+function genBonusInRandBricks()
+{
+    let bricksNumber = bricksGenLvl[0].length;
+    let selectBrickBonus;
+    while (brickBonusNumber > 0)
+    {
+        selectBrickBonus = Math.floor(Math.random()*bricksNumber);
+        if(bricksGenLvl[0][selectBrickBonus] == 0)
+        {
+            bricksGenLvl[0][selectBrickBonus] = 1;
+            brickBonusNumber--;
+        }
+    }
+}
+
 function convertVisualArray()
 {
 	let brickGenNextIndex = brickColumnCount;
@@ -114,6 +132,7 @@ function convertVisualArray()
 		brickGenIndexCol++;
 		brickGenIndex = brickGenIndexCol
 	}
+    genBonusInRandBricks();
 }
 
 function genMap()
@@ -138,11 +157,6 @@ function genMap()
             brickType = 0;
         }
     }
-}
-
-function genBonus(nbr)
-{
-
 }
 
 function keyDownHandler(e)
@@ -426,10 +440,16 @@ function drawBricks()
                 bricks[c][r].y = brickY;
                 ctx.beginPath();
                 ctx.rect(brickX, brickY, brickWidth, brickHeight);
-                if (bricks[c][r].type == 0 || bricks[c][r].type == 1)
+                if (bricks[c][r].type == 0)
                 {
                     ctx.lineWidth = 5;
                     ctx.fillStyle = "rgba(40, 150, 175, .9)";
+                    ctx.strokeStyle = "rgba(40, 75, 87, .9)";
+                }
+                else if (bricks[c][r].type == 1)
+                {
+                    ctx.lineWidth = 5;
+                    ctx.fillStyle = "rgba(100, 100, 150, .9)";
                     ctx.strokeStyle = "rgba(40, 75, 87, .9)";
                 }
                 else if (bricks[c][r].type == 2)
