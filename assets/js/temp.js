@@ -158,7 +158,6 @@ function genMap()
                 bricks[c][r].bonus = Math.floor(Math.random()*bonusNbrDif);
                 bonus[bonusIndexInstall] = {x: 0, y: 0, status: 0, type: 0};
                 bonus[bonusIndexInstall].type = bricks[c][r].bonus;
-                console.log("index bonus: "+bricks[c][r].bonus);
                 bonusIndexInstall++;
             }
             brickType = 0;
@@ -232,16 +231,6 @@ function recordPaddleDirection(c, r)
     }
 }
 
-/*function drawBonus(brique)
-{
-    let bonus = brique.bonus;
-    let nomVariableImg = 'img0'+bonus;
-    ctx.drawImage(eval(nomVariableImg), bonusIndexInstall[].x + brickWidth /2 - bonusImgWidth /2, brique.bonusY + brickHeight /2  -bonusImgWidth /2, bonusImgWidth, bonusImgWidth);
-    collisionBonus(brique.x, brique.bonusY, brique); // PROBLEME ATTRIBUTS !!!!!!!!!
-    brique.bonusY += 3;
-
-}*/
-
 function killBonus()
 {
     for (i = 0; i < bonusIndexInstall; i++)
@@ -268,10 +257,10 @@ function drawBonus()
 }
 function activeBonus(brique, briqueX, briqueY)
 {           
-        bonus[bonusIndexInstall].status = 1;
-        bonus[bonusIndexInstall].x = briqueX + brickWidth/2 - bonusImgWidth/2;
-        bonus[bonusIndexInstall].y = briqueY + brickHeight/2 - bonusImgWidth/2;
-        bonusIndexInstall++;
+    bonus[bonusIndexInstall].status = 1;
+    bonus[bonusIndexInstall].x = briqueX + brickWidth/2 - bonusImgWidth/2;
+    bonus[bonusIndexInstall].y = briqueY + brickHeight/2 - bonusImgWidth/2;
+    bonusIndexInstall++;
 }
 
 function collisionDetection()
@@ -294,7 +283,6 @@ function collisionDetection()
                     	score++;
                         if (b.type == 1)
                         {
-                            console.log(b.type);
                             activeBonus(b, b.x, b.y);
                         }
                     }
@@ -315,7 +303,6 @@ function collisionDetection()
                     	score++;
                         if (b.type == 1)
                         {
-                            console.log(b.type);
                             activeBonus(b, b.x, b.y);
                         }
                     }
@@ -331,53 +318,58 @@ function collisionDetection()
 
 }
 
-function collisionBonus(bonusX, bonusY, brique)
+function collisionBonus()
 {
-    if (bonusX + bonusImgWidth > paddleX && bonusX < paddleX + paddle.width && bonusY > paddleY && bonusY < paddleY + paddleHeight)
+    for (i = 0; i < bonusIndexInstall; i++)
     {
-        if (brique.bonus == 0 && paddle.width < 140)
+        if (bonus[i].x + bonusImgWidth > paddleX && bonus[i].x < paddleX + paddle.width && bonus[i].y > paddleY && bonus[i].y < paddleY + paddleHeight && bonus[i].status == 1)
         {
-            let increaseTemp = setInterval(function()
+            if (bonus[i].type == 0 && paddle.width < 140)
             {
-                paddle.width++;
-                paddle.bonusIncrePadWidth--;
-                if (paddle.bonusIncrePadWidth <= 0)
+                let increaseTemp = setInterval(function()
                 {
-                    clearInterval(increaseTemp);
-                    paddle.bonusIncrePadWidth = bonusIncreDecrePadWidth;
-                }
-            }, 10);
-        }
-        if (brique.bonus == 1 && paddle.width > 50)
-        {            
-            let decreaseTemp = setInterval(function()
+                    paddle.width++;
+                    paddleX = paddleX - 0.5;
+                    paddle.bonusIncrePadWidth--;
+                    if (paddle.bonusIncrePadWidth <= 0)
+                    {
+                        clearInterval(increaseTemp);
+                        paddle.bonusIncrePadWidth = bonusIncreDecrePadWidth;
+                    }
+                }, 10);
+            }
+            if (bonus[i].type == 1 && paddle.width > 50)
+            {            
+                let decreaseTemp = setInterval(function()
+                {
+                    paddle.width--;
+                    paddleX = paddleX + 0.5;
+                    paddle.bonusDecrePadWidth--;
+                    if (paddle.bonusDecrePadWidth <= 0)
+                    {
+                        clearInterval(decreaseTemp);
+                        paddle.bonusDecrePadWidth = bonusIncreDecrePadWidth;
+                    }
+                }, 10);
+            }
+            if (bonus[i].type == 2 && dx >= 3 || bonus[i].type == 2 && dx <= 3)
             {
-                paddle.width--;
-                paddle.bonusDecrePadWidth--;
-                if (paddle.bonusDecrePadWidth <= 0)
-                {
-                    clearInterval(decreaseTemp);
-                    paddle.bonusDecrePadWidth = bonusIncreDecrePadWidth;
-                }
-            }, 10);
+                dx = dx/1.5;
+                dy = dy/1.5;
+                changeBallAngle();        
+            }
+            if (bonus[i].type == 3 && dx <= 5 || bonus[i].type == 3 && dx >= -5)
+            {
+                dx = dx*1.5;
+                dy = dy*1.5;
+                changeBallAngle();
+            }
+            bonus[i].y = canvas.height + 50;
         }
-        if (brique.bonus == 2 && dx >= 3 || brique.bonus == 2 && dx <= 3)
+        if (bonus[i].y > canvas.height)
         {
-            dx = dx/2;
-            dy = dy/2;
-            changeBallAngle();        
+            bonus[i].status = 0;
         }
-        if (brique.bonus == 3 && dx <= 5 || brique.bonus == 3 && dx >= -5)
-        {
-            dx = dx*2;
-            dy = dy*2;
-            changeBallAngle();
-        }
-        bonusY = canvas.height + 50;
-    }
-    if (bonusY > canvas.height)
-    {
-        brique.type = 0;
     }
 }
 function changeBallAngle()
@@ -639,6 +631,7 @@ function draw()
     drawScore();
     drawLives();
     collisionDetection();
+    collisionBonus();
     if(x + dx > canvas.width - ballRadius || x + dx < ballRadius) //  rebonds balle canvas
     {
         dx = -dx;
