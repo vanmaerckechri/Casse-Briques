@@ -242,6 +242,17 @@ function recordPaddleDirection(c, r)
 
 }*/
 
+function killBonus()
+{
+    for (i = 0; i < bonusIndexInstall; i++)
+    {
+        if (bonus[i].status == 1)
+        {
+            bonus[i].status = 0;
+        }
+    }       
+}
+
 function drawBonus()
 {
     for (i = 0; i < bonusIndexInstall; i++)
@@ -250,8 +261,8 @@ function drawBonus()
         {
             let bonusImg = new Image();
             bonusImg.src = 'assets/img/bonus0'+bonus[i].type+'.png';
-            console.log(bonusImg.src);
             ctx.drawImage(bonusImg, bonus[i].x, bonus[i].y, bonusImgWidth, bonusImgWidth);
+            bonus[i].y += 3;
         }
     }   
 }
@@ -688,6 +699,7 @@ function draw()
 }
 function reInit()
 {
+    killBonus();
 	rightPressed = false;
 	leftPressed = false;
 	increaseAnglePressed = false;
