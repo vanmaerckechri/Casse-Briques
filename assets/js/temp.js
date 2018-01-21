@@ -59,7 +59,7 @@ var brickOffsetTop = 65;
 var backgroundImg = 'assets/img/tuto.jpg';
 var bricksGenLvl = [];
 var bricksGenLvl01 = [ // array 1 = briques bonus. array 2 = briques incassables.
-    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 3,
     0, 0, 0, 0, 0, 0, 0, 0
     ];
 var bricksGenLvl02 = [
@@ -176,7 +176,7 @@ function genMap()
         		victoireCount++
         	}
 			convertVisualArray();
-            bricks[c][r] = { x: 0, y: 0, status: 1, type: brickType, bonus: -1, cycleParticles: 0, particlePosX : [], particulePosY: [], particuleDirection: 0, colorR: [], colorG: [], colorB: []};
+            bricks[c][r] = { x: 0, y: 0, status: 1, type: brickType, bonus: -1, cycleParticles: 0, cycleFireParticles: 0, particlePosX : [], particulePosY: [], particleFirePosX: [], particuleFirePosY: [], particuleDirection: 0, colorR: [], colorG: [], colorB: [], colorFireR: [], colorFireG: [], colorFireB: []};
             if (brickType == 9) // type 0 = destructible, type 1 = destructible + bonus
             {
                 bricks[c][r].status = 0;
@@ -317,10 +317,11 @@ function collisionDetection()
                 {
                     recordPaddleDirection(c, r);
                     dx = -dx;
-                    if (b.type <= 1)
+                    if (b.type <= 1 || b.type == 3)
                     {
                     	b.status = 0;
                         b.cycleParticles = 1;
+                        b.cycleFireParticles = b.type == 3 ? 1 : 0;
                     	score++;
                         victoireCount--;
                         if (b.type == 1)
@@ -337,10 +338,11 @@ function collisionDetection()
                 {
                     recordPaddleDirection(c, r);
                     dy = -dy;
-                    if (b.type <= 1)
+                    if (b.type <= 1 || b.type == 3)
                     {
                     	b.status = 0;
                         b.cycleParticles = 1;
+                        b.cycleFireParticles = b.type == 3 ? 1 : 0;
                     	score++;
                         victoireCount--;
                         if (b.type == 1)
@@ -555,10 +557,89 @@ function drawBricks()
                     ctx.fillStyle = "rgba(100, 90, 100, .9)";
                     ctx.strokeStyle = "rgba(80, 60, 75, .9)";
                 }
+                else if (bricks[c][r].type == 3)
+                {
+                    ctx.lineWidth = 5;
+                    ctx.fillStyle = "rgba(200, 90, 50, .9)";
+                    ctx.strokeStyle = "rgba(80, 60, 75, .9)";
+                }
                 ctx.stroke();
                 ctx.fill();
                 ctx.closePath();
             }
+        }
+    }
+}
+
+function drawBrickFireParticles()
+{
+    let particlesMax = 300;
+    for(c=0; c<brickColumnCount; c++)
+    {
+        for(r=0; r<brickRowCount; r++)
+        {
+            let brique = bricks[c][r];
+            if(brique.cycleFireParticles > 0 && brique.type == 3)
+            {   
+                let particleX;
+                let particleY;
+                let directionX = 1;
+                let directionY = 1;
+
+                if(brique.cycleFireParticles == 1)
+                {
+                    for(p=0; p<particlesMax; p++) //explosion: init
+                    {
+                        brique.colorFireR[p] = 200 + Math.floor(Math.random()*50);
+                        brique.colorFireG[p] = 150 + Math.floor(Math.random()*25);
+                        brique.colorFireB[p] = 50 + Math.floor(Math.random()*25);
+                        brique.particleFirePosX[p] = directionX * brique.x + Math.floor(Math.random()*brickWidth);
+                        brique.particuleFirePosY[p] = directionY * brique.y + Math.floor(Math.random()*brickHeight);
+                        particleX = brique.particleFirePosX[p];
+                        particleY = brique.particuleFirePosY[p];
+                    }
+                }
+                if(brique.cycleFireParticles > 1) //explosion: gravité direction
+                {
+                    for(p=0; p<particlesMax; p++)
+                    {
+                        brique.particuleFirePosY[p] = brique.particuleFirePosY[p] + Math.floor(Math.random()*10);
+                        particleY = brique.particuleFirePosY[p];
+                        // collisions avec le joueur -1 vie.
+                        if (brique.particuleFirePosY[p] > paddleY && brique.particuleFirePosY[p] < paddleY + paddleHeight && brique.particleFirePosX[p] > paddleX && brique.particleFirePosX[p] < paddleX + paddleWidth)
+                        {
+                            lives--;
+                            brique.cycleFireParticles = 0;
+                            brique.status = 0;
+                            toPlay = 0;
+                            reInit();
+                            launchCountdown();
+                        }
+                    }
+                }
+                if(brique.cycleFireParticles > 1 && brique.particuleFirePosY[p] > canvas.height)
+                {
+                    for(p=0; p<particlesMax; p++)
+                    {
+                        brique.particuleFirePosY[p] = brique.particuleFirePosY[p] + Math.floor(Math.random()*20);
+                        particleY = brique.particuleFirePosY[p];
+                        brique.cycleFireParticles = 0;
+                        brique.status = 0;
+                    }
+                }
+                if(brique.cycleFireParticles > 0)
+                {
+                    for(p=0; p<particlesMax; p++) 
+                    {
+                        ctx.beginPath();
+                        ctx.rect(brique.particleFirePosX[p], brique.particuleFirePosY[p], 3, 3);
+                        ctx.fillStyle = 'rgb('+brique.colorFireR[p]+', '+brique.colorFireG[p]+', '+brique.colorFireB[p]+')';
+                        ctx.fill();
+                        ctx.closePath(); 
+                        bricks[c][r].cycleFireParticles++;
+                    }
+                }
+            }    
         }
     }
 }
@@ -671,6 +752,7 @@ function draw()
     drawBricks();
     drawBonus();
     drawParticles();
+    drawBrickFireParticles();
     drawPaddle();
     drawBall();
     collisionDetection();
