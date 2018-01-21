@@ -70,11 +70,11 @@ var bricksGenLvl02 = [
     ];
 var lvl02 = {bonusNbrDif: 2, brickBonusNumber: 4, brickColumnCount: 8, brickRowCount: 4, brickOffsetTop: 65, backgroundImg: 'assets/img/map02.jpg'};
 var bricksGenLvl03 = [
-    0, 2, 8, 0, 0, 8, 2, 0,
-    0, 0, 0, 0, 0, 0, 0, 0,
-    8, 8, 8, 0, 0, 8, 8, 8,
-    0, 0, 2, 2, 2, 2, 0, 0,
-    8, 8, 0, 8, 8, 0, 8, 8
+    0, 2, 8, 9, 9, 8, 2, 0,
+    0, 0, 8, 9, 9, 8, 0, 0,
+    0, 0, 0, 2, 2, 0, 0, 0,
+    0, 0, 2, 0, 0, 2, 0, 0,
+    0, 8, 0, 8, 8, 0, 8, 0
     ];
 var lvl03 = {bonusNbrDif: 4, brickBonusNumber: 4, brickColumnCount: 8, brickRowCount: 5, brickOffsetTop: 65, backgroundImg: 'assets/img/map03.jpg'};
 bricksGenLvl.push(bricksGenLvl01, bricksGenLvl02, bricksGenLvl03);
