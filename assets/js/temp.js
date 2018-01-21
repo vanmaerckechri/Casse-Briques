@@ -36,45 +36,58 @@ var laserDxLeft = laserDummyDxLeft;
 var laserDyLeft = laserDummyDyLeft;
 var laserLengthAtBirth = 0;
 var dummyAngleRefresh = 0;
-
+//infos
+var score = 0;
+var lives = 3;
 //briques
-var brickRowCount = 3;
+var brickRowCount = 2;
 var brickColumnCount = 8;
 var brickWidth = 75;
 var brickHeight = 20;
 var brickPadding = 5;
-var brickOffsetTop = 65;
-var brickOffsetLeft = (canvas.width - ((brickWidth * brickColumnCount) + (brickPadding * brickColumnCount)))/2;
-var score = 0;
-var lives = 3;
-
 var brickGenIndex = 0;
 var brickGenIndexCol = 0;
 var brickType = 0;
-var briquesNbrPourVictoire = 0;
+var victoireCount = 0;
 var brickBelowOthersFromTop = 0;
 var bricks = [];
+var brickRowCount = 2;
+var brickColumnCount = 8;
+var brickOffsetLeft = (canvas.width - ((brickWidth * brickColumnCount) + (brickPadding * brickColumnCount)))/2;
+var brickOffsetTop = 65;
+// maps
+var backgroundImg = 'assets/img/tuto.jpg';
 var bricksGenLvl = [];
 var bricksGenLvl01 = [ // array 1 = briques bonus. array 2 = briques incassables.
-    9, 9, 9, 9, 9, 9, 9, 0,
-    2, 9, 2, 9, 9, 2, 9, 2,
-    9, 9, 9, 9, 9, 9, 9, 9
+    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0
     ];
 var bricksGenLvl02 = [
-    2, 2, 0, 2, 2, 0, 2, 2,
+    0, 9, 0, 0, 0, 0, 9, 0,
+    2, 9, 0, 0, 0, 0, 9, 2,
     0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0,
-    2, 0, 2, 0, 2, 0, 2, 0
+    0, 0, 2, 0, 0, 2, 0, 0
     ];
-var lvl02 = {bonusNbrDif: 4, brickBonusNumber: 3, brickColumnCount: 8, brickRowCount: 4, brickOffsetTop: 65};
+var lvl02 = {bonusNbrDif: 2, brickBonusNumber: 4, brickColumnCount: 8, brickRowCount: 4, brickOffsetTop: 65, backgroundImg: 'assets/img/map02.jpg'};
+var bricksGenLvl03 = [
+    0, 0, 2, 0, 0, 2, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0,
+    2, 2, 2, 2, 2, 2, 2, 2,
+    0, 0, 0, 0, 0, 0, 0, 0,
+    2, 2, 0, 2, 2, 0, 2, 2
+    ];
+var lvl03 = {bonusNbrDif: 4, brickBonusNumber: 4, brickColumnCount: 8, brickRowCount: 5, brickOffsetTop: 65, backgroundImg: 'assets/img/map03.jpg'};
+bricksGenLvl.push(bricksGenLvl01, bricksGenLvl02, bricksGenLvl03);
 var bricksGenLvlIndex = 0;
-bricksGenLvl.push(bricksGenLvl01, bricksGenLvl02);
 // bonus
 var bonusImgWidth = 25;
-var bonusNbrDif = 2;
-var brickBonusNumber = 0;
+var bonusNbrDif = 1;
+var brickBonusNumber = 1;
 var bonus = [];
 var bonusIndexInstall = 0;
+//filtre
+var filtre = new Image();
+filtre.src = 'assets/img/filtre.png';
 
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
@@ -151,6 +164,7 @@ function convertVisualArray()
 
 function genMap()
 {
+    canvas.style.backgroundImage = "url('"+backgroundImg+"')";
     for(c=0; c<brickColumnCount; c++)
     {
         bricks[c] = [];
@@ -159,7 +173,7 @@ function genMap()
         	brickType = bricksGenLvl[bricksGenLvlIndex][brickGenIndex];
         	if (brickType <= 1) // type 0 = destructible, type 1 = destructible + bonus, type 9 = un espace
         	{
-        		briquesNbrPourVictoire++
+        		victoireCount++
         	}
 			convertVisualArray();
             bricks[c][r] = { x: 0, y: 0, status: 1, type: brickType, bonus: -1, cycleParticles: 0, particlePosX : [], particulePosY: [], particuleDirection: 0, colorR: [], colorG: [], colorB: []};
@@ -255,6 +269,19 @@ function killBonus()
         }
     }       
 }
+function drawFiltre()
+{
+    ctx.drawImage(filtre, 0, 0, 800, 600);
+}
+function drawVictoire()
+{   
+    if (toPlay == -2)
+    {
+        ctx.font = "32px Arial";
+        ctx.fillStyle = "rgba(40, 150, 175, .9)";
+        ctx.fillText("VICTOIRE ", canvas.width/2 - 70, canvas.height/2);
+    }
+}
 
 function drawBonus()
 {
@@ -295,12 +322,13 @@ function collisionDetection()
                     	b.status = 0;
                         b.cycleParticles = 1;
                     	score++;
+                        victoireCount--;
                         if (b.type == 1)
                         {
                             activeBonus(b, b.x, b.y);
                         }
                     }
-                    if(score == briquesNbrPourVictoire)
+                    if(victoireCount == 0)
                     {
                         nextMap();
                     }
@@ -314,12 +342,13 @@ function collisionDetection()
                     	b.status = 0;
                         b.cycleParticles = 1;
                     	score++;
+                        victoireCount--;
                         if (b.type == 1)
                         {
                             activeBonus(b, b.x, b.y);
                         }
                     }
-                    if(score == briquesNbrPourVictoire)
+                    if(victoireCount == 0)
                     {
                         nextMap();
                     }
@@ -644,11 +673,13 @@ function draw()
     drawParticles();
     drawPaddle();
     drawBall();
-    drawScore();
-    drawLives();
     collisionDetection();
     collisionBonus();
+    drawFiltre()
     launchRound(bricksGenLvlIndex+1);
+    drawVictoire();
+    drawScore();
+    drawLives();
     if(x + dx > canvas.width - ballRadius || x + dx < ballRadius) //  rebonds balle canvas
     {
         dx = -dx;
@@ -701,7 +732,7 @@ function draw()
 
     x += dx;
     y += dy;
-    if (toPlay <= 0)
+    if (toPlay <= 0 && toPlay > -2)
     {
         placeCoundown();
     }
@@ -731,27 +762,32 @@ function nextMap()
 {
     bricksGenLvlIndex++;
     let lvlRealNumber = bricksGenLvlIndex + 1;
-    brickGenIndex = 0;
-    brickGenIndexCol = 0;
-    brickType = 0;
-    briquesNbrPourVictoire = 0;
-    brickBelowOthersFromTop = 0;
-    bricks = [];
-    bricksGenLvl = [];
-    bricksGenLvl.push(bricksGenLvl01, bricksGenLvl02);
-    brickBonusNumber = eval("lvl0"+lvlRealNumber+".brickBonusNumber");
-    brickColumnCount = eval("lvl0"+lvlRealNumber+".brickColumnCount");
-    brickRowCount = eval("lvl0"+lvlRealNumber+".brickRowCount");
-    bonusNbrDif = eval("lvl0"+lvlRealNumber+".bonusNbrDif");
-    brickOffsetTop = eval("lvl0"+lvlRealNumber+".brickOffsetTop");
-    brickOffsetLeft = (canvas.width - ((brickWidth * brickColumnCount) + (brickPadding * brickColumnCount)))/2;
-    toPlay = -1;
-    console.log("brickBonusNumber"+brickBonusNumber);
-    console.log("brickColumnCount"+brickColumnCount);
-    reInit();
-    genMap();
-    calcLaserLengthAtBirth()
-    launchCountdown();
+    if (bricksGenLvlIndex > bricksGenLvl.length)
+    {
+        reInit();
+        toPlay = -2;
+    }
+    else
+    {
+        toPlay = -1;
+        brickGenIndex = 0;
+        brickGenIndexCol = 0;
+        brickType = 0;
+        victoireCount = 0;
+        brickBelowOthersFromTop = 0;
+        bricks = [];
+        brickBonusNumber = eval("lvl0"+lvlRealNumber+".brickBonusNumber");
+        brickColumnCount = eval("lvl0"+lvlRealNumber+".brickColumnCount");
+        brickRowCount = eval("lvl0"+lvlRealNumber+".brickRowCount");
+        bonusNbrDif = eval("lvl0"+lvlRealNumber+".bonusNbrDif");
+        brickOffsetTop = eval("lvl0"+lvlRealNumber+".brickOffsetTop");
+        backgroundImg = eval("lvl0"+lvlRealNumber+".backgroundImg");
+        brickOffsetLeft = (canvas.width - ((brickWidth * brickColumnCount) + (brickPadding * brickColumnCount)))/2;
+        reInit();
+        genMap();
+        calcLaserLengthAtBirth()
+        launchCountdown();
+    }
 }
 genMap();
 calcLaserLengthAtBirth()
