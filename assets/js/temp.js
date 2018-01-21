@@ -59,7 +59,7 @@ var brickOffsetTop = 65;
 var backgroundImg = 'assets/img/tuto.jpg';
 var bricksGenLvl = [];
 var bricksGenLvl01 = [ // array 1 = briques bonus. array 2 = briques incassables.
-    0, 0, 0, 0, 0, 0, 0, 3,
+    3, 3, 3, 3, 3, 3, 3, 3,
     0, 0, 0, 0, 0, 0, 0, 0
     ];
 var bricksGenLvl02 = [
@@ -171,7 +171,7 @@ function genMap()
         for(r=0; r<brickRowCount; r++)
         {
         	brickType = bricksGenLvl[bricksGenLvlIndex][brickGenIndex];
-        	if (brickType <= 1) // type 0 = destructible, type 1 = destructible + bonus, type 9 = un espace
+        	if (brickType <= 1 || brickType >= 3 && brickType < 9) // type 0 = destructible, type 1 = destructible + bonus, type 2 = Incassable, type 3 = feu, type 9 = un espace
         	{
         		victoireCount++
         	}
