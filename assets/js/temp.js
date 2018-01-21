@@ -385,6 +385,7 @@ function changeBallAngle()
 
 function drawDummyAngles()
 {  
+    let laserLeftRebondDirection;
     if (dummyAngleRefresh >= 6 && toPlay == 1)
     {
         laserDummyDyLeft =  laserLengthAtBirth;
@@ -407,6 +408,8 @@ function drawDummyAngles()
         laserDummyDxLeft = paddleX + (paddle.width/2);
         laserDummyLengthLeft = laserDummyDxLeft / Math.cos(angleDummyPaddle * Math.PI / 180);
         laserDummyDyLeft = laserDummyLengthLeft * Math.sin(angleDummyPaddle * Math.PI / 180);
+
+        laserLeftRebondDirection = 0;
     }
     if (laserDummyDxRight < canvas.width - paddleX + (paddle.width/2))
     {
@@ -431,7 +434,13 @@ function drawDummyAngles()
                 }
                 if (paddleX + (paddle.width/2) - laserDummyDxLeft > b.x && paddleX + (paddle.width/2) - laserDummyDxLeft < b.x+brickWidth && paddleY - laserDummyDyLeft > b.y && paddleY - laserDummyDyLeft < b.y+brickHeight)
                 {
-                    laserDummyLengthLeft -= brickHeight;
+
+                    laserDummyDyLeft = canvas.height - b.y - paddleHeight - brickHeight;
+
+                    laserDummyLengthLeft = laserDummyDyLeft / Math.sin(angleDummyPaddle * Math.PI / 180);
+                    laserDummyDxLeft = laserDummyLengthLeft * Math.cos(angleDummyPaddle * Math.PI / 180);
+
+                    laserLeftRebondDirection = 1;
                 }
             }
         }
@@ -464,6 +473,31 @@ function drawDummyAngles()
     ctx.strokeStyle = "rgba(225, 25, 25, .3)";
     ctx.stroke();
     ctx.closePath();  
+
+    let laserDxLeftRebond = 100;
+    let laserLengthLeftRebond = laserDxLeftRebond / Math.cos(angleDummyPaddle * Math.PI / 180);
+    let laserDyLeftRebond = laserLengthLeftRebond * Math.sin(angleDummyPaddle * Math.PI / 180);
+
+    if (laserLeftRebondDirection == 0)
+    {
+        ctx.beginPath();
+        ctx.moveTo(paddleX + (paddle.width/2) - laserDxLeft, paddleY - laserDyLeft);
+        ctx.lineTo(paddleX + (paddle.width/2) - laserDxLeft + laserDxLeftRebond, paddleY - laserDyLeft - laserDyLeftRebond);
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = "rgba(225, 25, 25, .3)";
+        ctx.stroke();
+        ctx.closePath();
+    }
+    else
+    {
+        ctx.beginPath();
+        ctx.moveTo(paddleX + (paddle.width/2) - laserDxLeft, paddleY - laserDyLeft);
+        ctx.lineTo(paddleX + (paddle.width/2) - laserDxLeft - laserDxLeftRebond, paddleY - laserDyLeft + laserDyLeftRebond);
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = "rgba(225, 25, 25, .3)";
+        ctx.stroke();
+        ctx.closePath();
+    }
 }
 
 function drawBall()
