@@ -2,7 +2,7 @@ var canvas = document.getElementById("scene");
 var ctx = canvas.getContext("2d");
 
 var text = document.getElementById('countdown');
-var toPlay = 0;
+var toPlay = -1;
 //balle
 var ballRadius = 8;
 var x = canvas.width/2; //position au commencement de la partie
@@ -37,12 +37,6 @@ var laserDyLeft = laserDummyDyLeft;
 var laserLengthAtBirth = 0;
 var dummyAngleRefresh = 0;
 
-var img00 = new Image(), img01 = new Image(), img02 = new Image(), img03 = new Image();
-img00.src = 'assets/img/bonus_increaseWidth.png';
-img01.src = 'assets/img/bonus_decreaseWidth.png';
-img02.src = 'assets/img/bonus_decreaseSpeedBall.png';
-img03.src = 'assets/img/bonus_increaseSpeedBall.png';
-var bonusImgWidth = 25;
 //briques
 var brickRowCount = 3;
 var brickColumnCount = 8;
@@ -62,22 +56,38 @@ var brickBelowOthersFromTop = 0;
 var bricks = [];
 var bricksGenLvl = [];
 var bricksGenLvl01 = [ // array 1 = briques bonus. array 2 = briques incassables.
-    0, 0, 0, 0, 0, 0, 0, 0,
-    2, 0, 2, 0, 0, 2, 0, 2,
-    0, 0, 0, 0, 0, 0, 0, 0
+    9, 9, 9, 9, 9, 9, 9, 0,
+    2, 9, 2, 9, 9, 2, 9, 2,
+    9, 9, 9, 9, 9, 9, 9, 9
     ];
-var bricksGenLvl02;
+var bricksGenLvl02 = [
+    2, 2, 0, 2, 2, 0, 2, 2,
+    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0,
+    2, 0, 2, 0, 2, 0, 2, 0
+    ];
+var lvl02 = {bonusNbrDif: 4, brickBonusNumber: 3, brickColumnCount: 8, brickRowCount: 4, brickOffsetTop: 65};
 var bricksGenLvlIndex = 0;
 bricksGenLvl.push(bricksGenLvl01, bricksGenLvl02);
 // bonus
-var bonusNbrDif = 4;
-var brickBonusNumber = 3;
+var bonusImgWidth = 25;
+var bonusNbrDif = 2;
+var brickBonusNumber = 0;
 var bonus = [];
 var bonusIndexInstall = 0;
 
-
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
+
+function launchRound(lvl)
+{
+    if (toPlay == -1)
+    {
+        ctx.font = "32px Arial";
+        ctx.fillStyle = "rgba(40, 150, 175, .9)";
+        ctx.fillText("ROUND "+lvl, canvas.width/2 - 70, canvas.height/2);
+    }
+}
 
 function calcLaserLengthAtBirth()
 {
@@ -147,12 +157,16 @@ function genMap()
         for(r=0; r<brickRowCount; r++)
         {
         	brickType = bricksGenLvl[bricksGenLvlIndex][brickGenIndex];
-        	if (brickType <= 1) // type 0 = destructible, type 1 = destructible + bonus
+        	if (brickType <= 1) // type 0 = destructible, type 1 = destructible + bonus, type 9 = un espace
         	{
         		briquesNbrPourVictoire++
         	}
 			convertVisualArray();
             bricks[c][r] = { x: 0, y: 0, status: 1, type: brickType, bonus: -1, cycleParticles: 0, particlePosX : [], particulePosY: [], particuleDirection: 0, colorR: [], colorG: [], colorB: []};
+            if (brickType == 9) // type 0 = destructible, type 1 = destructible + bonus
+            {
+                bricks[c][r].status = 0;
+            }
             if (brickType == 1)
             {
                 bricks[c][r].bonus = Math.floor(Math.random()*bonusNbrDif);
@@ -288,8 +302,7 @@ function collisionDetection()
                     }
                     if(score == briquesNbrPourVictoire)
                     {
-                        alert("YOU WIN, CONGRATS!");
-                        document.location.reload();
+                        nextMap();
                     }
                 }
                 if(x > b.x && x < b.x+brickWidth && y + ballRadius > b.y && y - ballRadius < b.y+brickHeight)
@@ -308,8 +321,7 @@ function collisionDetection()
                     }
                     if(score == briquesNbrPourVictoire)
                     {
-                        alert("YOU WIN, CONGRATS!");
-                        document.location.reload();
+                        nextMap();
                     }
                 }
             }
@@ -636,6 +648,7 @@ function draw()
     drawLives();
     collisionDetection();
     collisionBonus();
+    launchRound(bricksGenLvlIndex+1);
     if(x + dx > canvas.width - ballRadius || x + dx < ballRadius) //  rebonds balle canvas
     {
         dx = -dx;
@@ -688,7 +701,7 @@ function draw()
 
     x += dx;
     y += dy;
-    if (toPlay == 0)
+    if (toPlay <= 0)
     {
         placeCoundown();
     }
@@ -713,6 +726,32 @@ function reInit()
     paddleX = (canvas.width-paddleWidth)/2;
     paddle.width = paddleWidth;
     paddle.height = paddleHeight;
+}
+function nextMap()
+{
+    bricksGenLvlIndex++;
+    let lvlRealNumber = bricksGenLvlIndex + 1;
+    brickGenIndex = 0;
+    brickGenIndexCol = 0;
+    brickType = 0;
+    briquesNbrPourVictoire = 0;
+    brickBelowOthersFromTop = 0;
+    bricks = [];
+    bricksGenLvl = [];
+    bricksGenLvl.push(bricksGenLvl01, bricksGenLvl02);
+    brickBonusNumber = eval("lvl0"+lvlRealNumber+".brickBonusNumber");
+    brickColumnCount = eval("lvl0"+lvlRealNumber+".brickColumnCount");
+    brickRowCount = eval("lvl0"+lvlRealNumber+".brickRowCount");
+    bonusNbrDif = eval("lvl0"+lvlRealNumber+".bonusNbrDif");
+    brickOffsetTop = eval("lvl0"+lvlRealNumber+".brickOffsetTop");
+    brickOffsetLeft = (canvas.width - ((brickWidth * brickColumnCount) + (brickPadding * brickColumnCount)))/2;
+    toPlay = -1;
+    console.log("brickBonusNumber"+brickBonusNumber);
+    console.log("brickColumnCount"+brickColumnCount);
+    reInit();
+    genMap();
+    calcLaserLengthAtBirth()
+    launchCountdown();
 }
 genMap();
 calcLaserLengthAtBirth()
