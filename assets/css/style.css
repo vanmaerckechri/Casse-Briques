@@ -18,7 +18,8 @@ html, body, header, nav, footer, section, div, span, h1, h2, h3, p, a, blockquot
     transform: rotateY(90deg);
     opacity: 0; } }
 html, body {
-  width: 100%; }
+  width: 100%;
+  background-color: black; }
 
 canvas {
   margin: 0 auto;

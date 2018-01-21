@@ -127,8 +127,8 @@ function launchCountdown()
                 clearInterval(countdownTempo);
                 text.style.display = 'none';
                 playerCycle = 1;
-                dx = 4;
-                dy = -4;
+                dx = ballSpeedDefaut;
+                dy = -ballSpeedDefaut;
             }
         }, 1000);
 }
