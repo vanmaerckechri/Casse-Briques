@@ -1,8 +1,10 @@
 var canvas = document.getElementById("scene");
 var ctx = canvas.getContext("2d");
 
-var text = document.getElementById('countdown');
-var playerCycle = -1; // -3 defaite, -2: victoire, -1: compte à rebour, 0: en jeu (campagne), 1: en jeu (map procédurales), 2: menu, 3: ajout un meilleur score...
+var countdownId = document.getElementById('countdown');
+var playerCycle = 0; // -3 defaite, -2: victoire, -1: compte à rebour, 0: menu, 1: en jeu (campagne), 2: en jeu (map procédurales), 3: ajout un meilleur score...
+// menu
+var optionSelect = 1;
 //balle
 var ballRadius = 8;
 var x = canvas.width/2; //position au commencement de la partie
@@ -19,11 +21,14 @@ var paddle = {width: paddleWidth, height: paddleHeight, bonusIncrePadWidth: bonu
 var paddleX = (canvas.width-paddleWidth)/2; //position au commencement de la partie
 var paddleY = canvas.height-paddleHeight
 var speedPlayer = 7;
+//touches
 var rightPressed = false;
 var leftPressed = false;
+var bottomPressed = false;
+var topPressed = false;
+var enterPressed = false;
+//laser
 var angleDummyPaddle = 45; //vitesse
-var decreaseAnglePressed = false;
-var increaseAnglePressed = false;
 var laserDummyDxLeft = 30;
 var laserDummyDyLeft = 30;
 var laserDummyDxRight = 30;
@@ -110,22 +115,22 @@ function calcLaserLengthAtBirth()
 
 function placeCoundown()
 {
-    text.style.left = canvas.offsetLeft + canvas.width/2 - 33 + 'px' ;
-    text.style.top = canvas.offsetTop + canvas.height/2 + 'px';
+    countdownId.style.left = canvas.offsetLeft + canvas.width/2 - 33 + 'px' ;
+    countdownId.style.top = canvas.offsetTop + canvas.height/2 + 'px';
 }
 function launchCountdown()
 {
     let number = 3;
-    text.innerHTML = number;
-    text.style.display = 'block';
+    countdownId.innerHTML = number;
+    countdownId.style.display = 'block';
     countdownTempo = setInterval (function()
         {
             number--;
-            text.innerHTML = number;
+            countdownId.innerHTML = number;
             if (number < 0)
             {
                 clearInterval(countdownTempo);
-                text.style.display = 'none';
+                countdownId.style.display = 'none';
                 playerCycle = 1;
                 dx = ballSpeedDefaut;
                 dy = -ballSpeedDefaut;
@@ -171,7 +176,7 @@ function genMap()
         for(r=0; r<brickRowCount; r++)
         {
         	brickType = bricksGenLvl[bricksGenLvlIndex][brickGenIndex];
-        	if (brickType < 8) // type 0 = destructible, type 1 = destructible + bonus, type 2 = feu, type 8 = Incassable, type 9 = un espace
+        	if (brickType < 8) // type 0 = destructible, type 1 = destructible + bonus, type 2 = feu, type 8 = Incassable, type 9 = un espacePressed
         	{
         		victoireCount++
         	}
@@ -193,10 +198,10 @@ function genMap()
     }
     bonusIndexInstall = 0;
 }
-var space = false;
+var spacePressed = false;//pas oublier d effacer
 function keyDownHandler(e)
 {
-	if (playerCycle == 1)
+	if (playerCycle >= 0)
 	{
 	    if(e.keyCode == 39)
 	    {
@@ -208,21 +213,25 @@ function keyDownHandler(e)
 	    }
 	    else if(e.keyCode == 40)
 	    {
-	        decreaseAnglePressed = true;
+	        bottomPressed = true;
 	    }
 	    else if(e.keyCode == 38)
 	    {
-	        increaseAnglePressed = true;
+	        topPressed = true;
 	    }
-        else if(e.keyCode == 32) // espace triche
+        else if(e.keyCode == 32) // espacePressed triche
         {
-            space = true;
+            spacePressed = true;
+        }
+        else if(e.keyCode == 13)
+        {
+            enterPressed = true;
         }
 	}
 }
 function keyUpHandler(e)
 {
-	if (playerCycle == 1)
+	if (playerCycle >= 0)
 	{
 	    if(e.keyCode == 39)
 	    {
@@ -234,15 +243,19 @@ function keyUpHandler(e)
 	    }
 	    else if(e.keyCode == 40)
 	    {
-	        decreaseAnglePressed = false;
+	        bottomPressed = false;
 	    }
 	    else if(e.keyCode == 38)
 	    {
-	        increaseAnglePressed = false;
+	        topPressed = false;
 	    }
-        else if(e.keyCode == 32) // espace triche
+        else if(e.keyCode == 32) // espacePressed triche
         {
-            space = false;
+            spacePressed = false;
+        }
+        else if(e.keyCode == 13)
+        {
+            enterPressed = false;
         }
 	}
 }
@@ -778,7 +791,7 @@ function drawLives() {
 }
 function draw()
 {
-    if (space == true) //triche map suivante avec espace
+    if (spacePressed == true) //triche map suivante avec espacePressed
     {
         for(c=0; c<brickColumnCount; c++)
         {
@@ -790,7 +803,7 @@ function draw()
         }
         victoireCount = 0;
         nextMap();
-        space = false;
+        spacePressed = false;
     }
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawDummyAngles();
@@ -848,11 +861,11 @@ function draw()
         paddleX -= speedPlayer;
     }
 
-    if(decreaseAnglePressed == true && angleDummyPaddle > 20)
+    if(bottomPressed == true && angleDummyPaddle > 20)
     {
         angleDummyPaddle = angleDummyPaddle - 2;
     }
-    else if (increaseAnglePressed == true && angleDummyPaddle < 60)
+    else if (topPressed == true && angleDummyPaddle < 60)
     {
         angleDummyPaddle = angleDummyPaddle +2;
     }
@@ -887,8 +900,8 @@ function reInit()
     killFireParticles();
 	rightPressed = false;
 	leftPressed = false;
-	increaseAnglePressed = false;
-	decreaseAnglePressed = false;
+	topPressed = false;
+	bottomPressed = false;
 	dx = 0; // vitesse de deplacement
 	dy = 0;
     x = canvas.width/2;
@@ -933,7 +946,46 @@ function nextMap()
         launchCountdown();
     }
 }
-genMap();
-calcLaserLengthAtBirth()
-draw();
-launchCountdown();
+
+function drawMenu()
+{
+    countdownId.style.display = 'none';
+    ctx.beginPath();
+    ctx.rect(0, 0, 800, 600);
+    ctx.fillStyle = "black";
+    ctx.fill();
+    ctx.closePath(); 
+    ctx.font = "54px Arial";
+    ctx.fillStyle = "rgba(40, 150, 175, .9)";
+    ctx.fillText("Break my Bricks ", 75, 115);
+    ctx.font = "38px Arial";
+    ctx.fillStyle = optionSelect == 1 ? "rgba(40, 150, 175, .9)" : "rgba(40, 150, 175, .5)";
+    ctx.fillText(".Campaign ", 75, canvas.height/2 - 50);
+    ctx.fillStyle = optionSelect == 2 ? "rgba(40, 150, 175, .9)" : "rgba(40, 150, 175, .5)";
+    ctx.fillText(".Marathon", 75, canvas.height/2 + 50);
+    if (optionSelect == 1 && bottomPressed == true)
+    {
+        optionSelect = 2;
+    }
+    if (optionSelect == 2 && topPressed == true)
+    {
+        optionSelect = 1;
+    }
+    if (optionSelect == 1 && enterPressed == true)
+    {
+        playerCycle = -1;
+        launchCampagn();
+        return;
+    }
+    requestAnimationFrame(drawMenu);
+}
+drawMenu();
+
+
+function launchCampagn()
+{
+    genMap();
+    calcLaserLengthAtBirth()
+    draw();
+    launchCountdown();
+}
