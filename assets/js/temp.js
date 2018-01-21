@@ -320,9 +320,18 @@ function collisionDetection()
             var b = bricks[c][r];
             if(b.status == 1)
             {
+                // collisions verticales balle|brique 
             	if(x > b.x - ballRadius && x < b.x && y  > b.y -ballRadius && y < b.y + brickHeight +ballRadius || x < b.x + brickWidth + ballRadius && x > b.x+brickWidth && y  > b.y -ballRadius && y < b.y + brickHeight +ballRadius)
                 {
                     recordPaddleDirection(c, r);
+                    if (dx > 0) // si la collision se produit vers la droite
+                    {
+                        x = b.x - ballRadius;
+                    }
+                    else
+                    {
+                        x = b.x + brickWidth + ballRadius;
+                    }
                     dx = -dx;
                     if (b.type < 8)
                     {
@@ -341,9 +350,18 @@ function collisionDetection()
                         nextMap();
                     }
                 }
+                // collisions horizontales balle|brique 
                 if(x > b.x && x < b.x+brickWidth && y + ballRadius > b.y && y - ballRadius < b.y+brickHeight)
                 {
                     recordPaddleDirection(c, r);
+                    if (dy < 0) // si la collision se produit par le bas
+                    {
+                        y = b.y + brickHeight + ballRadius;
+                    }
+                    else
+                    {
+                        y = b.y - ballRadius;
+                    }
                     dy = -dy;
                     if (b.type < 8)
                     {
