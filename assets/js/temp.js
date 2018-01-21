@@ -2,7 +2,7 @@ var canvas = document.getElementById("scene");
 var ctx = canvas.getContext("2d");
 
 var text = document.getElementById('countdown');
-var toPlay = -1;
+var playerCycle = -1; // -3 defaite, -2: victoire, -1: compte à rebour, 0: en jeu (campagne), 1: en jeu (map procédurales), 2: menu, 3: ajout un meilleur score...
 //balle
 var ballRadius = 8;
 var x = canvas.width/2; //position au commencement de la partie
@@ -94,7 +94,7 @@ document.addEventListener("keyup", keyUpHandler, false);
 
 function launchRound(lvl)
 {
-    if (toPlay == -1)
+    if (playerCycle == -1)
     {
         ctx.font = "32px Arial";
         ctx.fillStyle = "rgba(40, 150, 175, .9)";
@@ -126,7 +126,7 @@ function launchCountdown()
             {
                 clearInterval(countdownTempo);
                 text.style.display = 'none';
-                toPlay = 1;
+                playerCycle = 1;
                 dx = 4;
                 dy = -4;
             }
@@ -196,7 +196,7 @@ function genMap()
 var space = false;
 function keyDownHandler(e)
 {
-	if (toPlay == 1)
+	if (playerCycle == 1)
 	{
 	    if(e.keyCode == 39)
 	    {
@@ -222,7 +222,7 @@ function keyDownHandler(e)
 }
 function keyUpHandler(e)
 {
-	if (toPlay == 1)
+	if (playerCycle == 1)
 	{
 	    if(e.keyCode == 39)
 	    {
@@ -282,7 +282,7 @@ function drawFiltre()
 }
 function drawVictoire()
 {   
-    if (toPlay == -2)
+    if (playerCycle == -2)
     {
         ctx.font = "32px Arial";
         ctx.fillStyle = "rgba(40, 150, 175, .9)";
@@ -435,7 +435,7 @@ function changeBallAngle()
 
 function drawDummyAngles()
 {  
-    if (dummyAngleRefresh >= 6 && toPlay == 1)
+    if (dummyAngleRefresh >= 6 && playerCycle == 1)
     {
         laserDummyDyLeft =  laserLengthAtBirth;
         laserDummyLengthLeft = laserDummyDyLeft / Math.sin(angleDummyPaddle * Math.PI / 180);
@@ -490,7 +490,7 @@ function drawDummyAngles()
     laserDummyDyRight = laserDummyLengthRight * Math.sin(angleDummyPaddle * Math.PI / 180);
     laserDummyDxLeft = laserDummyLengthLeft * Math.cos(angleDummyPaddle * Math.PI / 180);
     laserDummyDyLeft = laserDummyLengthLeft * Math.sin(angleDummyPaddle * Math.PI / 180);
-    if (dummyAngleRefresh >= 5 && toPlay == 1)
+    if (dummyAngleRefresh >= 5 && playerCycle == 1)
     {
         laserDxRight = laserDummyDxRight;
         laserDyRight = laserDummyDyRight;
@@ -623,7 +623,7 @@ function drawBrickFireParticles()
                             }
                             else
                             {
-                                toPlay = 0;
+                                playerCycle = 0;
                                 reInit();
                                 launchCountdown();
                             }
@@ -814,7 +814,7 @@ function draw()
             }
             else
             {
-            	toPlay = 0;
+            	playerCycle = 0;
                 reInit();
                 launchCountdown();
             }
@@ -841,7 +841,7 @@ function draw()
 
     x += dx;
     y += dy;
-    if (toPlay <= 0 && toPlay > -2)
+    if (playerCycle <= 0 && playerCycle > -2)
     {
         placeCoundown();
     }
@@ -891,11 +891,11 @@ function nextMap()
     if (bricksGenLvlIndex > bricksGenLvl.length)
     {
         reInit();
-        toPlay = -2;
+        playerCycle = -2;
     }
     else
     {
-        toPlay = -1;
+        playerCycle = -1;
         reInit();
         brickGenIndex = 0;
         brickGenIndexCol = 0;
