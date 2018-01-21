@@ -59,22 +59,22 @@ var brickOffsetTop = 65;
 var backgroundImg = 'assets/img/tuto.jpg';
 var bricksGenLvl = [];
 var bricksGenLvl01 = [ // array 1 = briques bonus. array 2 = briques incassables.
-    3, 3, 3, 3, 3, 3, 3, 3,
+    0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0
     ];
 var bricksGenLvl02 = [
     0, 9, 0, 0, 0, 0, 9, 0,
-    2, 9, 0, 0, 0, 0, 9, 2,
+    8, 9, 0, 0, 0, 0, 9, 8,
     0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 2, 0, 0, 2, 0, 0
+    0, 0, 8, 0, 0, 8, 0, 0
     ];
 var lvl02 = {bonusNbrDif: 2, brickBonusNumber: 4, brickColumnCount: 8, brickRowCount: 4, brickOffsetTop: 65, backgroundImg: 'assets/img/map02.jpg'};
 var bricksGenLvl03 = [
-    0, 0, 2, 0, 0, 2, 0, 0,
+    0, 2, 8, 0, 0, 8, 2, 0,
     0, 0, 0, 0, 0, 0, 0, 0,
-    2, 2, 2, 2, 2, 2, 2, 2,
-    0, 0, 0, 0, 0, 0, 0, 0,
-    2, 2, 0, 2, 2, 0, 2, 2
+    8, 8, 8, 0, 0, 8, 8, 8,
+    0, 0, 2, 2, 2, 2, 0, 0,
+    8, 8, 0, 8, 8, 0, 8, 8
     ];
 var lvl03 = {bonusNbrDif: 4, brickBonusNumber: 4, brickColumnCount: 8, brickRowCount: 5, brickOffsetTop: 65, backgroundImg: 'assets/img/map03.jpg'};
 bricksGenLvl.push(bricksGenLvl01, bricksGenLvl02, bricksGenLvl03);
@@ -171,7 +171,7 @@ function genMap()
         for(r=0; r<brickRowCount; r++)
         {
         	brickType = bricksGenLvl[bricksGenLvlIndex][brickGenIndex];
-        	if (brickType <= 1 || brickType >= 3 && brickType < 9) // type 0 = destructible, type 1 = destructible + bonus, type 2 = Incassable, type 3 = feu, type 9 = un espace
+        	if (brickType < 8) // type 0 = destructible, type 1 = destructible + bonus, type 2 = feu, type 8 = Incassable, type 9 = un espace
         	{
         		victoireCount++
         	}
@@ -317,11 +317,11 @@ function collisionDetection()
                 {
                     recordPaddleDirection(c, r);
                     dx = -dx;
-                    if (b.type <= 1 || b.type == 3)
+                    if (b.type < 8)
                     {
                     	b.status = 0;
                         b.cycleParticles = 1;
-                        b.cycleFireParticles = b.type == 3 ? 1 : 0;
+                        b.cycleFireParticles = b.type == 2 ? 1 : 0;
                     	score++;
                         victoireCount--;
                         if (b.type == 1)
@@ -338,11 +338,11 @@ function collisionDetection()
                 {
                     recordPaddleDirection(c, r);
                     dy = -dy;
-                    if (b.type <= 1 || b.type == 3)
+                    if (b.type < 8)
                     {
                     	b.status = 0;
                         b.cycleParticles = 1;
-                        b.cycleFireParticles = b.type == 3 ? 1 : 0;
+                        b.cycleFireParticles = b.type == 2 ? 1 : 0;
                     	score++;
                         victoireCount--;
                         if (b.type == 1)
@@ -554,14 +554,14 @@ function drawBricks()
                 else if (bricks[c][r].type == 2)
                 {
                     ctx.lineWidth = 5;
-                    ctx.fillStyle = "rgba(100, 90, 100, .9)";
+                    ctx.fillStyle = "rgba(175, 75, 40, .9)";
                     ctx.strokeStyle = "rgba(80, 60, 75, .9)";
                 }
-                else if (bricks[c][r].type == 3)
+                else if (bricks[c][r].type == 8)
                 {
                     ctx.lineWidth = 5;
-                    ctx.fillStyle = "rgba(200, 90, 50, .9)";
-                    ctx.strokeStyle = "rgba(80, 60, 75, .9)";
+                    ctx.fillStyle = "rgba(100, 90, 100, .9)";
+                    ctx.strokeStyle = "rgba(40, 75, 87, .9)";
                 }
                 ctx.stroke();
                 ctx.fill();
@@ -579,7 +579,7 @@ function drawBrickFireParticles()
         for(r=0; r<brickRowCount; r++)
         {
             let brique = bricks[c][r];
-            if(brique.cycleFireParticles > 0 && brique.type == 3)
+            if(brique.cycleFireParticles > 0 && brique.type == 2)
             {   
                 let particleX;
                 let particleY;
@@ -609,11 +609,17 @@ function drawBrickFireParticles()
                         if (brique.particuleFirePosY[p] > paddleY && brique.particuleFirePosY[p] < paddleY + paddleHeight && brique.particleFirePosX[p] > paddleX && brique.particleFirePosX[p] < paddleX + paddleWidth)
                         {
                             lives--;
-                            brique.cycleFireParticles = 0;
-                            brique.status = 0;
-                            toPlay = 0;
-                            reInit();
-                            launchCountdown();
+                            if(!lives)
+                            {
+                                alert("GAME OVER");
+                                document.location.reload();
+                            }
+                            else
+                            {
+                                toPlay = 0;
+                                reInit();
+                                launchCountdown();
+                            }
                         }
                     }
                 }
@@ -820,9 +826,26 @@ function draw()
     }
     requestAnimationFrame(draw);
 }
+function killFireParticles()
+{
+    let brique;
+    for(c=0; c<brickColumnCount; c++)
+    {
+        for(r=0; r<brickRowCount; r++)
+        {
+            brique = bricks[c][r];
+            if (brique.cycleFireParticles > 0)
+            {
+                brique.status = 0;
+                brique.cycleFireParticles =0;
+            }
+        }
+    }
+}
 function reInit()
 {
     killBonus();
+    killFireParticles();
 	rightPressed = false;
 	leftPressed = false;
 	increaseAnglePressed = false;
@@ -852,6 +875,7 @@ function nextMap()
     else
     {
         toPlay = -1;
+        reInit();
         brickGenIndex = 0;
         brickGenIndexCol = 0;
         brickType = 0;
@@ -865,7 +889,6 @@ function nextMap()
         brickOffsetTop = eval("lvl0"+lvlRealNumber+".brickOffsetTop");
         backgroundImg = eval("lvl0"+lvlRealNumber+".backgroundImg");
         brickOffsetLeft = (canvas.width - ((brickWidth * brickColumnCount) + (brickPadding * brickColumnCount)))/2;
-        reInit();
         genMap();
         calcLaserLengthAtBirth()
         launchCountdown();
