@@ -398,21 +398,25 @@ function drawDummyAngles()
         dummyAngleRefresh = 0;
     }
 
-    if (paddleX + (paddle.width/2) - laserDummyDxLeft > 0)
+    if (laserDummyDxLeft < paddleX + (paddle.width/2))
     {
         laserDummyLengthLeft += brickHeight;
     }
     else
     {
-        laserDummyLengthLeft -= brickHeight;
+        laserDummyDxLeft = paddleX + (paddle.width/2);
+        laserDummyLengthLeft = laserDummyDxLeft / Math.cos(angleDummyPaddle * Math.PI / 180);
+        laserDummyDyLeft = laserDummyLengthLeft * Math.sin(angleDummyPaddle * Math.PI / 180);
     }
-    if (paddleX + (paddle.width/2) + laserDummyDxRight < canvas.width)
+    if (laserDummyDxRight < canvas.width - paddleX + (paddle.width/2))
     {
         laserDummyLengthRight += brickHeight;
     }
     else
     {
-        laserDummyLengthRight -= brickHeight;
+        laserDummyDxRight = canvas.width - paddleX + (paddle.width/2);
+        laserDummyLengthRight = laserDummyDxRight / Math.cos(angleDummyPaddle * Math.PI / 180);
+        laserDummyDyRight = laserDummyLengthRight * Math.sin(angleDummyPaddle * Math.PI / 180);
     }
     for(c=0; c<brickColumnCount; c++)
     {
