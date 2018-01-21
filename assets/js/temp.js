@@ -193,7 +193,7 @@ function genMap()
     }
     bonusIndexInstall = 0;
 }
-
+var space = false;
 function keyDownHandler(e)
 {
 	if (toPlay == 1)
@@ -206,14 +206,18 @@ function keyDownHandler(e)
 	    {
 	        leftPressed = true;
 	    }
-	    else if(e.keyCode == 40) // a
+	    else if(e.keyCode == 40)
 	    {
 	        decreaseAnglePressed = true;
 	    }
-	    else if(e.keyCode == 38) // e
+	    else if(e.keyCode == 38)
 	    {
 	        increaseAnglePressed = true;
 	    }
+        else if(e.keyCode == 32) // espace triche
+        {
+            space = true;
+        }
 	}
 }
 function keyUpHandler(e)
@@ -228,17 +232,20 @@ function keyUpHandler(e)
 	    {
 	        leftPressed = false;
 	    }
-	    else if(e.keyCode == 40) // a
+	    else if(e.keyCode == 40)
 	    {
 	        decreaseAnglePressed = false;
 	    }
-	    else if(e.keyCode == 38) // e
+	    else if(e.keyCode == 38)
 	    {
 	        increaseAnglePressed = false;
 	    }
+        else if(e.keyCode == 32) // espace triche
+        {
+            space = false;
+        }
 	}
 }
-
 function recordPaddleDirection(c, r)
 {
     if (dx > 0 && dy < 0)
@@ -753,6 +760,20 @@ function drawLives() {
 }
 function draw()
 {
+    if (space == true) //triche map suivante avec espace
+    {
+        for(c=0; c<brickColumnCount; c++)
+        {
+            for(r=0; r<brickRowCount; r++)
+            {
+                let brique = bricks[c][r];
+                brique.status = 0;
+            }
+        }
+        victoireCount = 0;
+        nextMap();
+        space = false;
+    }
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawDummyAngles();
     drawBricks();
