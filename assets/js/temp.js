@@ -999,6 +999,7 @@ function drawMenu()
     if (optionSelect == 1 && enterPressed == true)
     {
         playerCycle = -1;
+        marathonGame = false;
         launchCampagn();
         draw();
         return;
