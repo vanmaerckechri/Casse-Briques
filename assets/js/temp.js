@@ -2,7 +2,8 @@ var canvas = document.getElementById("scene");
 var ctx = canvas.getContext("2d");
 
 var countdownId = document.getElementById('countdown');
-var playerCycle = 0; // -3 defaite, -2: victoire, -1: compte à rebour, 0: menu, 1: en jeu (campagne), 2: en jeu (map procédurales), 3: ajout un meilleur score...
+var playerCycle = 0; // -3 defaite, -2: victoire, -1: compte à rebour, 0: menu, 1: en jeu
+var marathonGame = false;
 // menu
 var optionSelect = 1;
 //balle
@@ -97,10 +98,11 @@ filtre.src = 'assets/img/filtre.png';
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 
-function launchRound(lvl)
+function launchRound()
 {
     if (playerCycle == -1)
     {
+        let lvl = marathonGame == true ? bricksGenLvlIndex : bricksGenLvlIndex + 1;
         ctx.font = "32px Arial";
         ctx.fillStyle = "rgba(40, 150, 175, .9)";
         ctx.fillText("ROUND "+lvl, canvas.width/2 - 70, canvas.height/2);
@@ -155,8 +157,6 @@ function genBonusInRandBricks()
 
 function convertVisualArray()
 {
-	let brickGenNextIndex = brickColumnCount;
-
 	brickGenIndex += brickColumnCount;
 
 	if (brickGenIndex > (brickColumnCount * (brickRowCount - 1))+brickGenIndexCol)
@@ -167,7 +167,7 @@ function convertVisualArray()
     genBonusInRandBricks();
 }
 
-function genMap()
+function genMap() //bricksGenLvlXx
 {
     canvas.style.backgroundImage = "url('"+backgroundImg+"')";
     for(c=0; c<brickColumnCount; c++)
@@ -176,13 +176,13 @@ function genMap()
         for(r=0; r<brickRowCount; r++)
         {
         	brickType = bricksGenLvl[bricksGenLvlIndex][brickGenIndex];
-        	if (brickType < 8) // type 0 = destructible, type 1 = destructible + bonus, type 2 = feu, type 8 = Incassable, type 9 = un espacePressed
+        	if (brickType < 8) // type 0 = destructible, type 1 = destructible + bonus, type 2 = feu, type 8 = Incassable, type 9 = un espace
         	{
         		victoireCount++
         	}
 			convertVisualArray();
             bricks[c][r] = { x: 0, y: 0, status: 1, type: brickType, bonus: -1, cycleParticles: 0, cycleFireParticles: 0, particlePosX : [], particulePosY: [], particleFirePosX: [], particuleFirePosY: [], particuleDirection: 0, colorR: [], colorG: [], colorB: [], colorFireR: [], colorFireG: [], colorFireB: []};
-            if (brickType == 9) // type 0 = destructible, type 1 = destructible + bonus
+            if (brickType == 9)
             {
                 bricks[c][r].status = 0;
             }
@@ -388,9 +388,15 @@ function collisionDetection()
                             activeBonus(b, b.x, b.y);
                         }
                     }
-                    if(victoireCount == 0)
+                    if(victoireCount == 0 && marathonGame == false)
                     {
                         nextMap();
+                    }
+                    if(victoireCount == 0 && marathonGame == true)
+                    {
+                        playerCycle = -1;
+                        reInit();
+                        genRandomMap();
                     }
                 }
             }
@@ -791,20 +797,6 @@ function drawLives() {
 }
 function draw()
 {
-    if (spacePressed == true) //triche map suivante avec espacePressed
-    {
-        for(c=0; c<brickColumnCount; c++)
-        {
-            for(r=0; r<brickRowCount; r++)
-            {
-                let brique = bricks[c][r];
-                brique.status = 0;
-            }
-        }
-        victoireCount = 0;
-        nextMap();
-        spacePressed = false;
-    }
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawDummyAngles();
     drawBricks();
@@ -816,7 +808,7 @@ function draw()
     collisionDetection();
     collisionBonus();
     drawFiltre()
-    launchRound(bricksGenLvlIndex+1);
+    launchRound();
     drawVictoire();
     drawScore();
     drawLives();
@@ -845,7 +837,7 @@ function draw()
             }
             else
             {
-            	playerCycle = 0;
+            	playerCycle = -1;
                 reInit();
                 launchCountdown();
             }
@@ -947,9 +939,42 @@ function nextMap()
     }
 }
 
+function genRandomMap()
+{
+    let maxBonus = 0;
+    playerCycle = -1;
+    brickGenIndex = 0;
+    brickGenIndexCol = 0;
+    brickType = 0;
+    victoireCount = 0;
+    brickBelowOthersFromTop = 0;
+    bricks = [];
+    brickColumnCount = Math.floor(Math.random()*8 + 2);
+    brickRowCount = Math.floor(Math.random()*6 + 2);
+    bonusNbrDif = Math.floor(Math.random()*4 + 1);
+    for (i = 0; i < (brickColumnCount*brickRowCount); i++)
+    {
+        let brickRand = Math.floor(Math.random()*10);
+        if (brickRand > 2 && brickRand < 8 || brickRand == 1)
+        {
+            brickRand = 0;
+        }
+        if (brickRand == 0)
+        {
+            maxBonus++;
+        }
+        bricksGenLvl[bricksGenLvlIndex][i] = brickRand;
+    }
+    brickBonusNumber = Math.floor(Math.random()*maxBonus);
+    brickOffsetLeft = (canvas.width - ((brickWidth * brickColumnCount) + (brickPadding * brickColumnCount)))/2;
+    launchCampagn();
+    bricksGenLvlIndex++;
+}
+
 function drawMenu()
 {
     countdownId.style.display = 'none';
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.beginPath();
     ctx.rect(0, 0, 800, 600);
     ctx.fillStyle = "black";
@@ -960,7 +985,7 @@ function drawMenu()
     ctx.fillText("Break my Bricks ", 75, 115);
     ctx.font = "38px Arial";
     ctx.fillStyle = optionSelect == 1 ? "rgba(40, 150, 175, .9)" : "rgba(40, 150, 175, .5)";
-    ctx.fillText(".Campaign ", 75, canvas.height/2 - 50);
+    ctx.fillText(".Campaign", 75, canvas.height/2 - 50);
     ctx.fillStyle = optionSelect == 2 ? "rgba(40, 150, 175, .9)" : "rgba(40, 150, 175, .5)";
     ctx.fillText(".Marathon", 75, canvas.height/2 + 50);
     if (optionSelect == 1 && bottomPressed == true)
@@ -975,6 +1000,15 @@ function drawMenu()
     {
         playerCycle = -1;
         launchCampagn();
+        draw();
+        return;
+    }
+    if (optionSelect == 2 && enterPressed == true)
+    {
+        playerCycle = -1;
+        marathonGame = true;
+        genRandomMap();
+        draw();
         return;
     }
     requestAnimationFrame(drawMenu);
@@ -986,6 +1020,5 @@ function launchCampagn()
 {
     genMap();
     calcLaserLengthAtBirth()
-    draw();
     launchCountdown();
 }
