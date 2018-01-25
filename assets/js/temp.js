@@ -94,6 +94,9 @@ var bonusIndexInstall = 0;
 //filtre
 var filtre = new Image();
 filtre.src = 'assets/img/filtre.png';
+//background marathon
+var marathonMap = new Image();
+marathonMap.src = 'assets/img/marathon_map.png';
 
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
@@ -169,7 +172,10 @@ function convertVisualArray()
 
 function genMap() //bricksGenLvlXx
 {
-    canvas.style.backgroundImage = "url('"+backgroundImg+"')";
+	if (marathonGame == false)
+	{
+    	canvas.style.backgroundImage = "url('"+backgroundImg+"')";
+    }
     for(c=0; c<brickColumnCount; c++)
     {
         bricks[c] = [];
@@ -292,6 +298,13 @@ function killBonus()
 function drawFiltre()
 {
     ctx.drawImage(filtre, 0, 0, 800, 600);
+}
+function drawMarathonBG()
+{
+	if (marathonGame == true)
+	{
+			ctx.drawImage(marathonMap, 0, 0, 800, 600);
+	}
 }
 function drawVictoire()
 {   
@@ -540,7 +553,7 @@ function drawDummyAngles()
     ctx.moveTo(paddleX + paddle.width/2, paddleY);
     ctx.lineTo(paddleX + (paddle.width/2) + laserDxRight, paddleY - laserDyRight);
     ctx.lineWidth = 2;
-    ctx.strokeStyle = "rgba(225, 25, 25, .3)";
+    ctx.strokeStyle = "rgba(25, 225, 225, .3)";
     ctx.stroke();
     ctx.closePath();
 
@@ -548,7 +561,7 @@ function drawDummyAngles()
     ctx.moveTo(paddleX + paddle.width/2, paddleY);
     ctx.lineTo(paddleX + (paddle.width/2) - laserDxLeft, paddleY - laserDyLeft);
     ctx.lineWidth = 2;
-    ctx.strokeStyle = "rgba(225, 25, 25, .3)";
+    ctx.strokeStyle = "rgba(25, 225, 225, .3)";
     ctx.stroke();
     ctx.closePath();  
 }
@@ -798,6 +811,7 @@ function drawLives() {
 function draw()
 {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawMarathonBG();
     drawDummyAngles();
     drawBricks();
     drawBonus();
@@ -949,6 +963,9 @@ function nextMap()
 
 function genRandomMap()
 {
+	let r = Math.floor(Math.random()*255 + 100);
+	let g = Math.floor(Math.random()*255 + 100);
+	let b = Math.floor(Math.random()*255 + 100);
     brickGenIndex = 0;
     brickGenIndexCol = 0;
     brickType = 0;
@@ -958,6 +975,7 @@ function genRandomMap()
     brickColumnCount = Math.floor(Math.random()*8 + 2);
     brickRowCount = Math.floor(Math.random()*6 + 2);
     bonusNbrDif = Math.floor(Math.random()*4 + 1);
+    canvas.style.background = 'rgb('+r+', '+g+', '+b+')';
     bricksGenLvl[bricksGenLvlIndex] = [];
     for (i = 0; i < (brickColumnCount*brickRowCount); i++)
     {
