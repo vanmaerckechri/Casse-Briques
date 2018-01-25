@@ -337,14 +337,14 @@ function collisionDetection()
             	if(x > b.x - ballRadius && x < b.x && y  > b.y -ballRadius && y < b.y + brickHeight +ballRadius || x < b.x + brickWidth + ballRadius && x > b.x+brickWidth && y  > b.y -ballRadius && y < b.y + brickHeight +ballRadius)
                 {
                     recordPaddleDirection(c, r);
-                    if (dx > 0) // si la collision se produit vers la droite
+                   /* if (dx > 0) // si la collision se produit vers la droite
                     {
                         x = b.x - ballRadius;
                     }
                     else
                     {
                         x = b.x + brickWidth + ballRadius;
-                    }
+                    } */
                     dx = -dx;
                     if (b.type < 8)
                     {
@@ -955,8 +955,8 @@ function genRandomMap()
     victoireCount = 0;
     brickBelowOthersFromTop = 0;
     bricks = [];    let maxBonus = 0;
-    brickColumnCount = 2;//Math.floor(Math.random()*8 + 2);
-    brickRowCount = 2;//Math.floor(Math.random()*6 + 2);
+    brickColumnCount = Math.floor(Math.random()*8 + 2);
+    brickRowCount = Math.floor(Math.random()*6 + 2);
     bonusNbrDif = Math.floor(Math.random()*4 + 1);
     bricksGenLvl[bricksGenLvlIndex] = [];
     for (i = 0; i < (brickColumnCount*brickRowCount); i++)
