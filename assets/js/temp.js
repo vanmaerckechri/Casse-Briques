@@ -909,49 +909,56 @@ function reInit()
 }
 function nextMap()
 {
-    bricksGenLvlIndex++;
-    let lvlRealNumber = bricksGenLvlIndex + 1;
-    if (bricksGenLvlIndex > bricksGenLvl.length)
+    if (marathonGame == true)
     {
-        reInit();
-        playerCycle = -2;
+        playerCycle = -1;
+        genRandomMap();
     }
     else
     {
-        playerCycle = -1;
-        reInit();
-        brickGenIndex = 0;
-        brickGenIndexCol = 0;
-        brickType = 0;
-        victoireCount = 0;
-        brickBelowOthersFromTop = 0;
-        bricks = [];
-        brickBonusNumber = eval("lvl0"+lvlRealNumber+".brickBonusNumber");
-        brickColumnCount = eval("lvl0"+lvlRealNumber+".brickColumnCount");
-        brickRowCount = eval("lvl0"+lvlRealNumber+".brickRowCount");
-        bonusNbrDif = eval("lvl0"+lvlRealNumber+".bonusNbrDif");
-        brickOffsetTop = eval("lvl0"+lvlRealNumber+".brickOffsetTop");
-        backgroundImg = eval("lvl0"+lvlRealNumber+".backgroundImg");
-        brickOffsetLeft = (canvas.width - ((brickWidth * brickColumnCount) + (brickPadding * brickColumnCount)))/2;
-        genMap();
-        calcLaserLengthAtBirth()
-        launchCountdown();
+        bricksGenLvlIndex++;
+        let lvlRealNumber = bricksGenLvlIndex + 1;
+        if (bricksGenLvlIndex > bricksGenLvl.length)
+        {
+            reInit();
+            playerCycle = -2;
+        }
+        else
+        {
+            playerCycle = -1;
+            reInit();
+            brickGenIndex = 0;
+            brickGenIndexCol = 0;
+            brickType = 0;
+            victoireCount = 0;
+            brickBelowOthersFromTop = 0;
+            bricks = [];
+            brickBonusNumber = eval("lvl0"+lvlRealNumber+".brickBonusNumber");
+            brickColumnCount = eval("lvl0"+lvlRealNumber+".brickColumnCount");
+            brickRowCount = eval("lvl0"+lvlRealNumber+".brickRowCount");
+            bonusNbrDif = eval("lvl0"+lvlRealNumber+".bonusNbrDif");
+            brickOffsetTop = eval("lvl0"+lvlRealNumber+".brickOffsetTop");
+            backgroundImg = eval("lvl0"+lvlRealNumber+".backgroundImg");
+            brickOffsetLeft = (canvas.width - ((brickWidth * brickColumnCount) + (brickPadding * brickColumnCount)))/2;
+            genMap();
+            calcLaserLengthAtBirth()
+            launchCountdown();
+        }
     }
 }
 
 function genRandomMap()
 {
-    let maxBonus = 0;
-    playerCycle = -1;
     brickGenIndex = 0;
     brickGenIndexCol = 0;
     brickType = 0;
     victoireCount = 0;
     brickBelowOthersFromTop = 0;
-    bricks = [];
-    brickColumnCount = Math.floor(Math.random()*8 + 2);
-    brickRowCount = Math.floor(Math.random()*6 + 2);
+    bricks = [];    let maxBonus = 0;
+    brickColumnCount = 2;//Math.floor(Math.random()*8 + 2);
+    brickRowCount = 2;//Math.floor(Math.random()*6 + 2);
     bonusNbrDif = Math.floor(Math.random()*4 + 1);
+    bricksGenLvl[bricksGenLvlIndex] = [];
     for (i = 0; i < (brickColumnCount*brickRowCount); i++)
     {
         let brickRand = Math.floor(Math.random()*10);
@@ -967,7 +974,7 @@ function genRandomMap()
     }
     brickBonusNumber = Math.floor(Math.random()*maxBonus);
     brickOffsetLeft = (canvas.width - ((brickWidth * brickColumnCount) + (brickPadding * brickColumnCount)))/2;
-    launchCampagn();
+    initNewMap();
     bricksGenLvlIndex++;
 }
 
@@ -1000,7 +1007,7 @@ function drawMenu()
     {
         playerCycle = -1;
         marathonGame = false;
-        launchCampagn();
+        initNewMap();
         draw();
         return;
     }
@@ -1017,9 +1024,10 @@ function drawMenu()
 drawMenu();
 
 
-function launchCampagn()
+function initNewMap()
 {
     genMap();
-    calcLaserLengthAtBirth()
+    calcLaserLengthAtBirth();
+    reInit();
     launchCountdown();
 }
