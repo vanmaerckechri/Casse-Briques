@@ -6,6 +6,10 @@ Réalisé durant la formation [Becode](http://www.becode.org/). Approfondir les 
 
 ## Mises à Jour
 
+* 2018-01-26
+  * Ajout du mode marathon (maps génèrées aléatoirement).
+  * Ajout du menu principal.
+  
 * 2018-01-18
   * Modification du thème visuel.
   * Amélioration du système de collision (balle/joueur, laser/décor).
