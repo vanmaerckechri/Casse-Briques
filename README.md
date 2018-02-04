@@ -1,4 +1,4 @@
-# Casse-Briques
+# Casse-Briques (Demo)
 
 ## Contexte
 
