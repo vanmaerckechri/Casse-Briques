@@ -235,6 +235,7 @@ function keyDownHandler(e)
         }
 	}
 }
+
 function keyUpHandler(e)
 {
 	if (playerCycle >= 0)
@@ -250,10 +251,12 @@ function keyUpHandler(e)
 	    else if(e.keyCode == 40)
 	    {
 	        bottomPressed = false;
+            bottomReset = true;
 	    }
 	    else if(e.keyCode == 38)
 	    {
 	        topPressed = false;
+            topReset = true;
 	    }
         else if(e.keyCode == 32) // espacePressed triche
         {
@@ -1013,13 +1016,17 @@ function drawMenu()
     ctx.fillText(".Campaign", 75, canvas.height/2 - 50);
     ctx.fillStyle = optionSelect == 2 ? "rgba(40, 150, 175, .9)" : "rgba(40, 150, 175, .5)";
     ctx.fillText(".Marathon", 75, canvas.height/2 + 50);
-    if (optionSelect == 1 && bottomPressed == true)
+    ctx.fillStyle = optionSelect == 3 ? "rgba(40, 150, 175, .9)" : "rgba(40, 150, 175, .5)";
+    ctx.fillText(".Meilleurs Scores", 75, canvas.height/2 + 150);
+    if (bottomPressed == true && optionSelect < 3)
     {
-        optionSelect = 2;
+        optionSelect++;
+        bottomPressed = false;
     }
-    if (optionSelect == 2 && topPressed == true)
+    if (topPressed == true && optionSelect > 1)
     {
-        optionSelect = 1;
+        optionSelect--;
+        topPressed = false;
     }
     if (optionSelect == 1 && enterPressed == true)
     {
