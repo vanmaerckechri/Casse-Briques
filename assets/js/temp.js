@@ -672,7 +672,11 @@ function drawBrickFireParticles()
                             if(!lives)
                             {
                                 alert("GAME OVER");
-                                document.location.reload();
+                                playerCycle = 0;
+                                cancelAnimationFrame(drawRequest);                               
+                                checkScores();
+                                displayBestScores();
+                                return;
                             }
                             else
                             {
@@ -811,6 +815,7 @@ function drawLives() {
     ctx.fillStyle = "rgba(40, 150, 175, .9)";
     ctx.fillText("Lives: "+lives, canvas.width-65, 20);
 }
+var drawRequest;
 function draw()
 {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -850,7 +855,11 @@ function draw()
             if(!lives)
             {
                 alert("GAME OVER");
-                document.location.reload();
+                playerCycle = 0;
+                cancelAnimationFrame(drawRequest);                               
+                checkScores();
+                displayBestScores();
+                return;
             }
             else
             {
@@ -885,7 +894,7 @@ function draw()
     {
         placeCoundown();
     }
-    requestAnimationFrame(draw);
+    drawRequest = requestAnimationFrame(draw);
 }
 function killFireParticles()
 {
@@ -998,14 +1007,32 @@ function genRandomMap()
     initNewMap();
     bricksGenLvlIndex++;
 }
-
+//best scores
 var insertName = "";
 
-function addLetter(index, key)
+function translateScoresToPhp()
+{
+    for (i = 0; i < 10; i++)
+    {
+        let nameId = document.getElementById("name"+i);
+        let scoreId = document.getElementById("score"+i);
+
+        nameId.value = bestScores[i].name;
+        scoreId.value = bestScores[i].score;
+    }
+    var myform = document.getElementById('scoresForm');
+    myform.submit();
+}
+
+function addLetter(index, key, touch)
 {
     if (insertName[insertName.length - 1] == "_")
     {
         insertName = insertName.substring(0, insertName.length - 1);
+    }
+    if (touch == 13)
+    {
+        translateScoresToPhp();
     }
     if (insertName.length < 5)
     {
@@ -1036,7 +1063,7 @@ function displayUnderscoreInput(index)
     bestScores[index].name = insertName;
     displayBestScores();
 }
-
+var underscoreInputTempo;
 function launchInput(index)
 {
     bestScores.splice(index, 0, "");
@@ -1058,16 +1085,15 @@ function launchInput(index)
             insertName = insertName.substring(0, insertName.length - 1);
             key = "";
         }
-        if (/^[a-z0-9]+$/i.test(key))
+        if (/^[a-z0-9]+$/i.test(key) || touch == 13)
         {
-            addLetter(index, key);
+            addLetter(index, key, touch);
         }
     });
-    let underscoreInputTempo = setInterval(function(){
+    underscoreInputTempo = setInterval(function(){
         displayUnderscoreInput(index);
     },400);
 }
-
 function checkScores()
 {
     let bestScoresLength = bestScores.length;
@@ -1086,6 +1112,9 @@ function displayBestScores()
     let bestScoresLength = bestScores.length;
     let bestScoresSpaceBetween = 80;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.rect(0, 0, 800, 600);
+    ctx.fillStyle = "black";
+    ctx.fill();
     ctx.font = "38px Arial";
     ctx.fillStyle = "rgba(40, 150, 175, .9)";
     ctx.fillText("Best Scores ", 75, 75);
@@ -1099,22 +1128,15 @@ function displayBestScores()
     }
 }
 
-function testScore()
-{
-    score = 800;
-    checkScores();
-    displayBestScores();
-}
-
+//Main Menu
+var drawMenuRequest;
 function drawMenu()
 {
     countdownId.style.display = 'none';
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.beginPath();
     ctx.rect(0, 0, 800, 600);
     ctx.fillStyle = "black";
     ctx.fill();
-    ctx.closePath(); 
     ctx.font = "54px Arial";
     ctx.fillStyle = "rgba(40, 150, 175, .9)";
     ctx.fillText("Break my Bricks ", 75, 115);
@@ -1139,6 +1161,7 @@ function drawMenu()
     {
         playerCycle = -1;
         marathonGame = false;
+        cancelAnimationFrame(drawMenuRequest);
         initNewMap();
         draw();
         return;
@@ -1147,16 +1170,17 @@ function drawMenu()
     {
         playerCycle = -1;
         marathonGame = true;
+        cancelAnimationFrame(drawMenuRequest);
         genRandomMap();
         draw();
         return;
     }
     if (optionSelect == 3 && enterPressed == true)
     {
-        testScore();
+        displayBestScores();
         return;
     }
-    requestAnimationFrame(drawMenu);
+    drawMenuRequest = requestAnimationFrame(drawMenu);
 }
 drawMenu();
 

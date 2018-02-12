@@ -32,6 +32,12 @@ h2 {
   font-size: 150px;
   color: #990000; }
 
+form {
+  display: none; }
+
+* {
+  color: white; }
+
 #countdown {
   position: absolute;
   animation-name: countdownNextNumber;

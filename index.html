@@ -1,3 +1,11 @@
+<?php
+	if (!isset($_POST["scores"]) || empty($_POST["scores"]))
+	{
+		echo 'fuck you';
+	}
+	$test = "fuck you";
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -10,6 +18,14 @@
 <body>
 	<canvas id="scene" width="800" height="600"></canvas>
 	<h2 id="countdown">3</h2>
+	<form action="index.php" method="post">
+		<input type="text" name="scores">
+		<input type="submit">
+	</form>
+	<?php 
+		echo $test;
+		echo "ello";
+	?>
 	<script type="text/javascript" src="assets/DB/score.db"></script>
 	<script type= "text/javascript" src="assets/js/temp.js"></script>
 </body>
