@@ -999,6 +999,113 @@ function genRandomMap()
     bricksGenLvlIndex++;
 }
 
+var insertName = "";
+
+function addLetter(index, key)
+{
+    if (insertName[insertName.length - 1] == "_")
+    {
+        insertName = insertName.substring(0, insertName.length - 1);
+    }
+    if (insertName.length < 5)
+    {
+        insertName += key;
+        bestScores[index].name = insertName;
+        displayBestScores();
+    }
+}
+
+function hideUnderscoreInput()
+{
+    if (insertName[insertName.length - 1] == "_")
+    {
+        insertName = insertName.substring(0, insertName.length - 1);
+    }
+}
+
+function displayUnderscoreInput(index)
+{
+    if (insertName[insertName.length - 1] == "_")
+    {
+        insertName = insertName.substring(0, insertName.length - 1);
+    }
+    else
+    {
+        insertName += "_";
+    }
+    bestScores[index].name = insertName;
+    displayBestScores();
+}
+
+function launchInput(index)
+{
+    bestScores.splice(index, 0, "");
+    bestScores[index] = {name: "_", score: score};
+    bestScores.pop();
+
+    let touch;
+    let key;
+    let abc = document.addEventListener ('keydown',  function(event)
+    {
+        touch = event.keyCode;
+        key = String.fromCharCode(touch);
+        if (touch == 8)
+        {
+            if (insertName[insertName.length - 1] == "_")
+            {
+                insertName = insertName.substring(0, insertName.length - 1);
+            }
+            insertName = insertName.substring(0, insertName.length - 1);
+            key = "";
+        }
+        if (/^[a-z0-9]+$/i.test(key))
+        {
+            addLetter(index, key);
+        }
+    });
+    let underscoreInputTempo = setInterval(function(){
+        displayUnderscoreInput(index);
+    },400);
+}
+
+function checkScores()
+{
+    let bestScoresLength = bestScores.length;
+    for (let i = 0; i < bestScoresLength; i++)
+    {
+        if (score > bestScores[i].score)
+        {
+            launchInput(i);
+            return;
+        }
+    }
+}
+
+function displayBestScores()
+{
+    let bestScoresLength = bestScores.length;
+    let bestScoresSpaceBetween = 80;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.font = "38px Arial";
+    ctx.fillStyle = "rgba(40, 150, 175, .9)";
+    ctx.fillText("Best Scores ", 75, 75);
+    ctx.font = "18px Arial";
+    for (let i = 0; i < bestScoresLength; i++)
+    {
+        ctx.fillStyle = "rgba(40, 150, 175, .9)";
+        ctx.fillText(bestScores[i].name, (canvas.width / 2) - 125, 75 + bestScoresSpaceBetween);
+        ctx.fillText(bestScores[i].score, (canvas.width / 2) + 125, 75 + bestScoresSpaceBetween);
+        bestScoresSpaceBetween += 45;
+    }
+}
+
+function testScore()
+{
+    score = 800;
+    checkScores();
+    displayBestScores();
+}
+
 function drawMenu()
 {
     countdownId.style.display = 'none';
@@ -1042,6 +1149,11 @@ function drawMenu()
         marathonGame = true;
         genRandomMap();
         draw();
+        return;
+    }
+    if (optionSelect == 3 && enterPressed == true)
+    {
+        testScore();
         return;
     }
     requestAnimationFrame(drawMenu);
