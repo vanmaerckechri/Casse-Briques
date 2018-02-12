@@ -1074,6 +1074,7 @@ function launchInput(index)
     let key;
     let abc = document.addEventListener ('keydown',  function(event)
     {
+        event.preventDefault();
         touch = event.keyCode;
         key = String.fromCharCode(touch);
         if (touch == 8)
