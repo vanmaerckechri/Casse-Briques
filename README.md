@@ -6,6 +6,9 @@ Réalisé durant la formation [Becode](http://www.becode.org/). Approfondir les 
 
 ## Mises à Jour
 
+* 2018-02-12
+  * Ajout des meilleurs scores stockés en ligne.
+
 * 2018-01-26
   * Ajout du mode marathon (maps génèrées aléatoirement).
   * Ajout du menu principal.
