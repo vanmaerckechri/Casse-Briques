@@ -1118,13 +1118,16 @@ function displayBestScores()
     ctx.fill();
     ctx.font = "38px Arial";
     ctx.fillStyle = "rgba(40, 150, 175, .9)";
-    ctx.fillText("Best Scores ", 75, 75);
+    ctx.fillText("Best Scores", 75, 75);
+    ctx.font = "18px Arial";
+    ctx.fillStyle = "rgba(40, 150, 175, .5)";
+    ctx.fillText("(press F5 or click on refresh to return to main menu)", 75, 110);
     ctx.font = "18px Arial";
     for (let i = 0; i < bestScoresLength; i++)
     {
         ctx.fillStyle = "rgba(40, 150, 175, .9)";
-        ctx.fillText(bestScores[i].name, (canvas.width / 2) - 125, 75 + bestScoresSpaceBetween);
-        ctx.fillText(bestScores[i].score, (canvas.width / 2) + 125, 75 + bestScoresSpaceBetween);
+        ctx.fillText(bestScores[i].name, 75, 75 + bestScoresSpaceBetween);
+        ctx.fillText(bestScores[i].score, (canvas.width / 2) + 150, 75 + bestScoresSpaceBetween);
         bestScoresSpaceBetween += 45;
     }
 }
